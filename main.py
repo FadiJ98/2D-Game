@@ -1,6 +1,7 @@
 import pygame
 import sys
 import os
+import Option
 
 # Initialize Pygame and the mixer for music
 pygame.init()
@@ -74,6 +75,7 @@ def main_menu():
                     print("Start the game")
 
                 elif options_button_rect.collidepoint(mouse_pos):
+                    Option.options_menu(screen)
                     print("Options menu")
 
                 elif exit_button_rect.collidepoint(mouse_pos):
