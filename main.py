@@ -3,6 +3,8 @@ import sys
 import os
 import Option
 
+# Sam can now officially work with github.
+
 # Initialize Pygame and the mixer for music
 pygame.init()
 pygame.mixer.init()
