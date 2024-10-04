@@ -2,8 +2,13 @@ import pygame
 import sys
 import os
 
-# Initialize Pygame
+# Initialize Pygame and the mixer for music
 pygame.init()
+pygame.mixer.init()
+
+# Load background music
+pygame.mixer.music.load('Menu-Music.wav')  # Replace with the actual music file path
+pygame.mixer.music.play(-1)  # -1 means the music will loop indefinitely
 
 # Set up the game window (width, height)
 window_size = (1920, 1080)
@@ -25,13 +30,13 @@ font = pygame.font.Font(None, 80)
 gif_folder = "gif_frames"  # Folder that contains individual frames of the GIF
 gif_frames = []
 for filename in sorted(os.listdir(gif_folder)):
-    if filename.endswith(".gif"):  # Assuming the frames are PNG files
+    if filename.endswith(".gif"):  # Assuming the frames are GIF files
         img_path = os.path.join(gif_folder, filename)
         gif_frames.append(pygame.image.load(img_path))
 
 # Define the frame rate for GIF animation
 current_frame = 0
-frame_rate = 25  # Speed of GIF animation (frames per second)
+frame_rate = 20  # Speed of GIF animation (frames per second)
 clock = pygame.time.Clock()
 
 # Create a function to draw rounded rectangles
@@ -75,15 +80,12 @@ def main_menu():
                     pygame.quit()
                     sys.exit()
 
-
         # Display the current frame of the GIF scaled to the window size
         gif_frame = pygame.transform.scale(gif_frames[current_frame], (screen_width, screen_height))
         screen.blit(gif_frame, (0, 0))  # Display scaled GIF
 
-
         # Update the GIF frame
         current_frame = (current_frame + 1) % len(gif_frames)
-
 
         # Draw buttons and their hover effect
         if start_button_rect.collidepoint(mouse_pos):
