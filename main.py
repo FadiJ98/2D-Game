@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 
 # Initialize Pygame
 pygame.init()
@@ -7,19 +8,31 @@ pygame.init()
 # Set up the game window (width, height)
 window_size = (1920, 1080)
 screen = pygame.display.set_mode(window_size, pygame.RESIZABLE)
-pygame.display.set_caption("2D Game")
+pygame.display.set_caption("2D Game with GIF")
 
 # Define colors for the buttons
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
-HOVER_COLOR = (180, 180, 180)  # Color when hovering
+HOVER_COLOR = (255, 255, 255)  # Color when hovering
 START_COLOR = (0, 191, 255)  # Blue
 OPTIONS_COLOR = (255, 165, 0)  # Orange
 EXIT_COLOR = (0, 206, 209)  # Teal
-BUTTON_COLOR = (100, 100, 100)
 
 # Set up fonts
 font = pygame.font.Font(None, 80)
+
+# Load the GIF frames dynamically from a folder
+gif_folder = "gif_frames"  # Folder that contains individual frames of the GIF
+gif_frames = []
+for filename in sorted(os.listdir(gif_folder)):
+    if filename.endswith(".gif"):  # Assuming the frames are PNG files
+        img_path = os.path.join(gif_folder, filename)
+        gif_frames.append(pygame.image.load(img_path))
+
+# Define the frame rate for GIF animation
+current_frame = 0
+frame_rate = 25  # Speed of GIF animation (frames per second)
+clock = pygame.time.Clock()
 
 # Create a function to draw rounded rectangles
 def draw_rounded_rect(surface, color, rect, corner_radius):
@@ -27,11 +40,11 @@ def draw_rounded_rect(surface, color, rect, corner_radius):
 
 # Calculate the center of the screen
 def get_centered_rect(button_width, button_height, screen_width, screen_height, offset_y):
-    # Center the button horizontally and place it with a y-offset
     return pygame.Rect((screen_width // 2 - button_width // 2), (screen_height // 2 - button_height // 2 + offset_y), button_width, button_height)
 
 # Main menu function
 def main_menu():
+    global current_frame
     while True:
         screen_width, screen_height = screen.get_size()  # Dynamically get the window size
         mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
@@ -41,7 +54,7 @@ def main_menu():
         button_height = 80
 
         # Get centered positions for buttons
-        start_button_rect = get_centered_rect(button_width, button_height, screen_width, screen_height, -100)  # Offset for vertical spacing
+        start_button_rect = get_centered_rect(button_width, button_height, screen_width, screen_height, -100)
         options_button_rect = get_centered_rect(button_width, button_height, screen_width, screen_height, 0)
         exit_button_rect = get_centered_rect(button_width, button_height, screen_width, screen_height, 100)
 
@@ -54,20 +67,25 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button_rect.collidepoint(mouse_pos):
                     print("Start the game")
-                    # Call the start_game() function here
 
                 elif options_button_rect.collidepoint(mouse_pos):
                     print("Options menu")
-                    # Call the options_menu() function here
 
                 elif exit_button_rect.collidepoint(mouse_pos):
                     pygame.quit()
                     sys.exit()
 
-        # Fill the background
-        screen.fill(WHITE)
 
-        # Draw and highlight buttons when hovering
+        # Display the current frame of the GIF scaled to the window size
+        gif_frame = pygame.transform.scale(gif_frames[current_frame], (screen_width, screen_height))
+        screen.blit(gif_frame, (0, 0))  # Display scaled GIF
+
+
+        # Update the GIF frame
+        current_frame = (current_frame + 1) % len(gif_frames)
+
+
+        # Draw buttons and their hover effect
         if start_button_rect.collidepoint(mouse_pos):
             draw_rounded_rect(screen, HOVER_COLOR, start_button_rect, 40)
         else:
@@ -95,6 +113,9 @@ def main_menu():
 
         # Update the display
         pygame.display.flip()
+
+        # Control the frame rate for the GIF animation
+        clock.tick(frame_rate)
 
 # Run the menu
 main_menu()
