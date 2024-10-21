@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 import Option
+import LevelSelector
 
 # Sam can now officially work with github.
 
@@ -74,10 +75,11 @@ def main_menu():
             # Check for mouse clicks
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button_rect.collidepoint(mouse_pos):
+                    #LevelSelector.level_selector() #Takes the player
                     print("Start the game")
 
                 elif options_button_rect.collidepoint(mouse_pos):
-                    Option.options_menu(screen)
+                    Option.options_menu(screen) #Takes the player to 
                     print("Options menu")
 
                 elif exit_button_rect.collidepoint(mouse_pos):
