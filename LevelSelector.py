@@ -8,6 +8,7 @@
 import pygame
 import sys
 import os
+#import levelNode
 
 #initialize Pygame
 pygame.init()
@@ -66,12 +67,16 @@ def draw_button(surface, rect, text, font, mouse_pos):
 
 
 #This is the function for the levels linked list
+import pygame
+import sys
+import os
+
 def levelNode(worldID, levelID, Name):
     #This is a linked list data type.
     #This is so that we can hold data about the level in the level selector, including whether the level can be selected at all, and also the neighboring levels for navigation purposes.
     #neighboring levels are classified into left, right, up, down, (and maybe a special identifier), this is because world navigation will be done with arrow keys/wasd
     levelLinks = [None]*4
-    levelAvailable = None
+    levelAvailable = False
     levelName = Name
     worldId = worldID #The numeric identification of what world this level is in.
     levelId = levelID #The numeric identification of what level this level is.
@@ -79,15 +84,17 @@ def levelNode(worldID, levelID, Name):
     rightLevel = levelLinks[1] #This is a pointer to the level to the left of this level.
     upLevel = levelLinks[2] #This is a pointer to the level to the left of this level.
     downLevel = levelLinks[3] #This is a pointer to the level to the left of this level.
-
+    
     def addLink(direction,Node):
         levelLinks[direction] = Node
-
+        
     def setAvailability(availability):
         levelAvailable = availability
     
-    #def playLevel():
-        #When the actual level function is available this is where we will link to.
+#def playLevel():
+    #When the actual level function is available this is where we will link to.
+
+
 
 #Main function of LevelSelector
 def level_selector():
@@ -100,6 +107,7 @@ def level_selector():
     selected_level = originLevel
 
     #When we are ready to create more levels we can make them here
+    #Main loop
     while True:
         screen_width, screen_height = screen.get_size()  # Dynamically get the window size
 
@@ -133,11 +141,11 @@ def level_selector():
                     if selected_level.levelAvailability == True:
                         selected_level.playLevel()
 
-            if event.type == pygame.Button_Left:
-                if play_button.collidepoint(mouse_pos):
-                    if selected_level.levelAvailability == True:
-                        selected_level.playLevel()
+            #if event.type == pygame.Button_Left:
+                #if play_button.collidepoint(mouse_pos):
+                    #if selected_level.levelAvailability == True:
+                        #selected_level.playLevel()
 
         #This is where the buttons and menus and other such graphical options will be created.
         LevelDisplay = pygame.rect(20,(screen_height-(screen_height//4)),screen_width-20,screen_height-20)
-        draw_rounded_rect(screen,Light_Brown,LevelDisplay,40)
+        draw_rounded_rect(screen,LIGHT_BROWN,LevelDisplay,40)
