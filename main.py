@@ -75,7 +75,7 @@ def main_menu():
             # Check for mouse clicks
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if start_button_rect.collidepoint(mouse_pos):
-                    LevelSelector.level_selector() #Takes the player to the level Selector menu
+                    LevelSelector.level_selector(screen) #Takes the player to the level Selector menu
                     print("Start the game")
 
                 elif options_button_rect.collidepoint(mouse_pos):
