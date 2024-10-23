@@ -4,9 +4,6 @@ import os
 import Option
 import LevelSelector
 
-#Doing a last test to verify - FadI
-print("Verifying")
-
 # Sam can now officially work with github.
 
 # Initialize Pygame and the mixer for music
