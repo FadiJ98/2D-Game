@@ -8,10 +8,10 @@ pygame.display.set_mode((1, 1)) #can be used later to diplay the character insid
 ###
 
 # Load the spritesheets
-walk_spritesheet = pygame.image.load('Group_Project_resources_main/Dude_Monster_Walk_6.png').convert_alpha()
-idle_spritesheet = pygame.image.load('Group_Project_resources_main/Dude_Monster_Idle_4.png').convert_alpha()
-jump_spritesheet = pygame.image.load('Group_Project_resources_main/Dude_Monster_Jump_8.png').convert_alpha()
-run_spritesheet = pygame.image.load('Group_Project_resources_main/Dude_Monster_Run_6.png').convert_alpha()
+walk_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Walk.png').convert_alpha()
+idle_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Idle.png').convert_alpha()
+jump_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Jump.png').convert_alpha()
+run_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Run.png').convert_alpha()
 
 # Define some constants
 SPRITE_WIDTH = walk_spritesheet.get_width() // 6  # There are 6 frames in the walk spritesheet

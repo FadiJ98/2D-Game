@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Level_File"
+    "\\2D_Game_Images\\Heros\\With_Rock",
+    "\\2D_Game_Images\\Heros\\With_Rock\\Tiny_Dude_Hero_With_Rock"
   ],
-  "SelectedNode": "\\Player_stats.py",
+  "SelectedNode": "\\Tiny_Dude_Hero.py",
   "PreviewInSolutionExplorer": false
 }
