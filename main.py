@@ -11,7 +11,7 @@ pygame.init()
 pygame.mixer.init()
 
 # Load background music
-pygame.mixer.music.load('Menu-Music.wav')  # Replace with the actual music file path
+pygame.mixer.music.load('OST/Menu-Music.wav')  # Replace with the actual music file path
 pygame.mixer.music.play(-1)  # -1 means the music will loop indefinitely
 
 # Set up the game window (width, height)

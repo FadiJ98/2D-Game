@@ -4,7 +4,7 @@ import pygame
 pygame.init()
 
 ###
-#pygame.display.set_mode((1, 1)) #can be used later to diplay the character inside any level!!! 
+pygame.display.set_mode((1, 1)) #can be used later to diplay the character inside any level!!! 
 ###
 
 # Load the spritesheets
@@ -54,7 +54,7 @@ class Player:
         self.current_frame = 0
         self.walking = False
         self.jumping = False
-        self.running = False  # To track if the player is running
+        self.running = False  
         self.direction = "right"
         self.velocity_y = 0  # Vertical velocity for jumping
         self.on_ground = True  # To check if the player is on the ground
@@ -62,7 +62,7 @@ class Player:
     def move(self, keys, screen_width, screen_height):
         self.walking = False
         self.running = False
-        self.speed = WALK_SPEED  # Default to walking speed
+        self.speed = WALK_SPEED  
         
         if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:  # Run if Shift is held
             self.speed = RUN_SPEED
