@@ -46,18 +46,25 @@ def draw_rounded_rect(surface, color, rect, border_radius):
     pygame.draw.rect(surface, color, rect, border_radius=border_radius)
 
 # Create a function to draw sliders with arrow buttons and wooden theme
-def draw_slider(surface, rect, value, max_value, left_arrow, right_arrow):
+def draw_slider(surface, rect, value, max_value, left_arrow, right_arrow, dragging_music, mouse_pos):
     # Draw rounded background for the slider
     draw_rounded_rect(surface, LIGHT_BROWN, rect, border_radius=15)
 
-    # Draw the slider handle based on the current value
-    handle_position = (rect.x + int((value / max_value) * rect.width), rect.y + 5)
+    # Calculate handle position (constrain it to the slider's bounds)
+    if dragging_music:
+        value = (mouse_pos[0] - rect.x) / rect.width  # Set value based on mouse position
+        value = max(0.0, min(value, 1.0))  # Clamp value between 0 and 1
+    
+    # Handle should follow the mouse smoothly
+    handle_position = (rect.x + int(value * (rect.width - 30)), rect.y + 5)  # Adjust position based on value
     handle_rect = pygame.Rect(handle_position[0], rect.y + 5, 30, rect.height - 10)  # Adjust handle size
     draw_rounded_rect(surface, DARK_BROWN, handle_rect, border_radius=10)
 
     # Draw arrows on each side of the slider
     pygame.draw.polygon(surface, DARK_BROWN, left_arrow)
     pygame.draw.polygon(surface, DARK_BROWN, right_arrow)
+
+    return value  # Return the updated value for use outside
 
 # Create a function to draw toggle buttons with rounded edges
 def draw_toggle(surface, rect, state):
@@ -152,11 +159,11 @@ def options_menu(screen):
         # Draw sliders with arrows
         left_arrow_music = [(left_offset_x - 30, 125), (left_offset_x - 10, 110), (left_offset_x - 10, 140)]
         right_arrow_music = [(left_offset_x + 400 + 30, 125), (left_offset_x + 400 + 10, 110), (left_offset_x + 400 + 10, 140)]
-        draw_slider(screen, music_slider_rect, music_volume, max_volume, left_arrow_music, right_arrow_music)
+        music_volume = draw_slider(screen, music_slider_rect, music_volume, max_volume, left_arrow_music, right_arrow_music, dragging_music, mouse_pos)
 
         left_arrow_sfx = [(left_offset_x - 30, 125 + vertical_spacing), (left_offset_x - 10, 110 + vertical_spacing), (left_offset_x - 10, 140 + vertical_spacing)]
         right_arrow_sfx = [(left_offset_x + 400 + 30, 125 + vertical_spacing), (left_offset_x + 400 + 10, 110 + vertical_spacing), (left_offset_x + 400 + 10, 140 + vertical_spacing)]
-        draw_slider(screen, sfx_slider_rect, sfx_volume, max_volume, left_arrow_sfx, right_arrow_sfx)
+        sfx_volume = draw_slider(screen, sfx_slider_rect, sfx_volume, max_volume, left_arrow_sfx, right_arrow_sfx, dragging_sfx, mouse_pos)
 
         # Draw toggle buttons
         draw_toggle(screen, effects_toggle_rect, effects_enabled)
@@ -185,4 +192,3 @@ def options_menu(screen):
 
         # Control the frame rate for the GIF animation
         clock.tick(frame_rate)
-

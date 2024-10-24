@@ -9,7 +9,7 @@ from re import L
 import pygame
 import sys
 import os
-import LevelNode
+from Level_File import LevelNode
 
 #initialize Pygame
 pygame.init()
