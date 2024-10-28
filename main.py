@@ -6,8 +6,6 @@ import LevelSelector
 
 # Sam can now officially work with github.
 
-#Test 1 2
-
 # Initialize Pygame and the mixer for music
 pygame.init()
 pygame.mixer.init()
