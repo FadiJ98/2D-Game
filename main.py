@@ -4,8 +4,6 @@ import os
 import Option
 import LevelSelector
 
-# Sam can now officially work with github.
-
 # Initialize Pygame and the mixer for music
 pygame.init()
 pygame.mixer.init()
@@ -51,6 +49,7 @@ def draw_rounded_rect(surface, color, rect, corner_radius):
 def get_centered_rect(button_width, button_height, screen_width, screen_height, offset_y):
     return pygame.Rect((screen_width // 2 - button_width // 2), (screen_height // 2 - button_height // 2 + offset_y), button_width, button_height)
 
+
 # Main menu function
 def main_menu():
     global current_frame
@@ -92,6 +91,8 @@ def main_menu():
 
         # Update the GIF frame
         current_frame = (current_frame + 1) % len(gif_frames)
+
+
 
         # Draw buttons and their hover effect
         if start_button_rect.collidepoint(mouse_pos):

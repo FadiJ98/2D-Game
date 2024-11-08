@@ -3,8 +3,7 @@ import sys
 pygame.init()
 class Enemy(pygame.sprite.Sprite):
     # this class should take in a sprite group, a sprite sheet (should only need the running animation, for now atleast)
-    # the position it should be placed, how fast it should move, the main screen display variable, how tall and wide each part of the image is
-    # and the player
+    # the position it should be placed, how fast it should move, the main screen display variable, how tall and wide each part of the image is and the player
 
     def __init__(self,groups, loaded_image, x , y, mov_speed, screen, width, height, player):
         super().__init__(groups)

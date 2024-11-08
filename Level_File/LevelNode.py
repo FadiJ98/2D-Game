@@ -28,7 +28,7 @@ class LevelNode:
             elif direction == 3:
                 self.downLevel = Node
             else:
-                print("You fucked up")
+                print("You screwd up")
         
     def setAvailability(self,availability):
             self.levelAvailable = availability
