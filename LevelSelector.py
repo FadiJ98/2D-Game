@@ -1,3 +1,4 @@
+from turtle import Screen
 import pygame
 import sys
 import os
@@ -54,6 +55,16 @@ def level_selector(screen):
     # Back button
     back_button_rect = pygame.Rect(20, 20, 100, 50)  # Positioned at the top-left
 
+    # Bottom Banner Rectangle
+    banner_rect = pygame.Rect(0,400,800,200)
+
+    # Play Button
+    play_button_rect = pygame.Rect(550,475,100,50)
+
+    # World Change Buttons
+    left_button_rect = pygame.Rect(20,475,100,50)
+    right_button_rect = pygame.Rect(680,475,100,50)
+
     # Level Buttons
     Level_Button1 = pygame.Rect(50, 100, 200, 100)
     Level_Button2 = pygame.Rect(300, 100, 200, 100)
@@ -98,6 +109,16 @@ def level_selector(screen):
 
         # Draw the Back button
         draw_button(screen, back_button_rect, "Back", font, mouse_pos)
+        
+        # Draw the bottom Banner
+        pygame.draw.rect(Screen,LIGHT_BROWN,banner_rect)
+
+        # Draw the world changing buttons
+        draw_button(Screen,left_button_rect,"Prev\nWorld",font,mouse_pos)
+        draw_button(Screen,right_button_rect,"Next\nWorld",font,mouse_pos)
+
+        # Draw the Play button
+        draw_button(Screen,play_button_rect,"Play",font,mouse_pos)
 
         #Drawing Level buttons for each world. If we're currently looking at world 1 levels, we will draw those buttons. Etc.
         if curWorld == 1:
