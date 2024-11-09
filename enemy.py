@@ -79,6 +79,7 @@ class Enemy(pygame.sprite.Sprite):
             self.screen.blit(self.sprites[int(self.sprite_index)], self.rect)
 
 
+    #Add a function where when an enemy dies drops a coin
     
 
 
