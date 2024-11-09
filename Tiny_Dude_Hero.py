@@ -1,150 +1,211 @@
 import pygame
+import time
 
 # Initialize Pygame
 pygame.init()
 
-###
-pygame.display.set_mode((1, 1)) #can be used later to diplay the character inside any level!!! 
-###
+# Constants for screen size and hero scale
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
+SCALE_FACTOR = 3
+WALK_SPEED = 5
+RUN_SPEED = 8  # Increased speed for running
 
-# Load the spritesheets
-walk_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Walk.png').convert_alpha()
-idle_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Idle.png').convert_alpha()
-jump_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Jump.png').convert_alpha()
-run_spritesheet = pygame.image.load('2D_Game_Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Run.png').convert_alpha()
+# Set up the display
+fullscreen = False  # Set to True for fullscreen mode
+if fullscreen:
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()  # Get actual screen size in fullscreen
+else:
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Hero Animation")
 
-# Define some constants
-SPRITE_WIDTH = walk_spritesheet.get_width() // 6  # There are 6 frames in the walk spritesheet
-SPRITE_HEIGHT = walk_spritesheet.get_height()  # Height of each frame in the spritesheet
-RUN_SPRITE_WIDTH = run_spritesheet.get_width() // 6  # 6 frames in the running spritesheet
-RUN_SPRITE_HEIGHT = run_spritesheet.get_height()  # Full height of the running spritesheet
-IDLE_SPRITE_WIDTH = idle_spritesheet.get_width() // 4  # 4 frames in the idle spritesheet
-IDLE_SPRITE_HEIGHT = idle_spritesheet.get_height()  # Full height of the idle spritesheet
-NUM_WALK_FRAMES = 6  # Number of frames in the walking animation
-NUM_RUN_FRAMES = 6  # Number of frames in the running animation
-NUM_JUMP_FRAMES = 8  # Number of frames in the jumping animation
-NUM_IDLE_FRAMES = 4  # Number of frames in the idle animation
-SCALE_FACTOR = 3  # Scale the character by 3x
-GRAVITY = 0.03  # Lower gravity for an even slower fall
-JUMP_STRENGTH = -5  # Reduced jump strength for slower upward motion, like Mario
-WALK_SPEED = 0.3  # Normal walking speed
-RUN_SPEED = 0.6  # Faster running speed when holding Shift
+# Load spritesheets without "jump"
+spritesheets = {
+    "throw": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Throw.png').convert_alpha(),
+    "death": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Death.png').convert_alpha(),
+    "idle": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Idle.png').convert_alpha(),
+    "hurt": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Hurt.png').convert_alpha(),
+    "push": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Push.png').convert_alpha(),
+    "run": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Run.png').convert_alpha(),
+    "walk": pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Walk.png').convert_alpha()
+}
 
-# Function to slice the spritesheet into individual frames
-def load_frames(spritesheet, num_frames, width, height):
+# Load the rock image for throwing
+rock_image = pygame.image.load('2D Game Images/Heros/With_Rock/Tiny_Dude_Hero_With_Rock/Rock1.png').convert_alpha()
+rock_image = pygame.transform.scale(rock_image, (16 * SCALE_FACTOR, 16 * SCALE_FACTOR))
+
+# Define frame counts without "jump"
+frame_counts = {
+    "throw": 4,
+    "death": 4,
+    "idle": 4,
+    "hurt": 4,
+    "push": 4,
+    "run": 6,
+    "walk": 6
+}
+
+# Function to load frames from a spritesheet
+def load_frames(spritesheet, num_frames):
+    frame_width = spritesheet.get_width() // num_frames
+    frame_height = spritesheet.get_height()
     frames = []
     for i in range(num_frames):
-        frame = spritesheet.subsurface(pygame.Rect(i * width, 0, width, height))
-        frame = pygame.transform.scale(frame, (width * SCALE_FACTOR, height * SCALE_FACTOR))
+        frame = spritesheet.subsurface(pygame.Rect(i * frame_width, 0, frame_width, frame_height))
+        frame = pygame.transform.scale(frame, (frame_width * SCALE_FACTOR, frame_height * SCALE_FACTOR))
         frames.append(frame)
     return frames
 
-# Load all the frames for walking, jumping, running, and idling
-walk_frames = load_frames(walk_spritesheet, NUM_WALK_FRAMES, SPRITE_WIDTH, SPRITE_HEIGHT)
-run_frames = load_frames(run_spritesheet, NUM_RUN_FRAMES, RUN_SPRITE_WIDTH, RUN_SPRITE_HEIGHT)
-jump_frames = load_frames(jump_spritesheet, NUM_JUMP_FRAMES, SPRITE_WIDTH, SPRITE_HEIGHT)
-idle_frames = load_frames(idle_spritesheet, NUM_IDLE_FRAMES, IDLE_SPRITE_WIDTH, IDLE_SPRITE_HEIGHT)
+# Initialize animations dictionary by loading frames for each action
+animations = {action: load_frames(spritesheet, frame_counts[action]) for action, spritesheet in spritesheets.items()}
 
-# Player class to handle movement, animation, jumping, running, and idle state
-class Player:
-    def __init__(self, x, y, speed=WALK_SPEED):
+# Rock class for handling rock throws
+class Rock:
+    def __init__(self, x, y, direction):
         self.x = x
         self.y = y
-        self.speed = speed
-        self.current_frame = 0
-        self.walking = False
-        self.jumping = False
-        self.running = False  
-        self.direction = "right"
-        self.velocity_y = 0  # Vertical velocity for jumping
-        self.on_ground = True  # To check if the player is on the ground
+        self.direction = direction
+        self.image = rock_image
+        self.speed = 10
 
-    def move(self, keys, screen_width, screen_height):
-        self.walking = False
-        self.running = False
-        self.speed = WALK_SPEED  
-        
-        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:  # Run if Shift is held
-            self.speed = RUN_SPEED
-            self.running = True
-
-        if keys[pygame.K_a]:  # Move left with 'A' key
-            self.x -= self.speed
-            self.walking = True
-            self.direction = "left"
-        if keys[pygame.K_d]:  # Move right with 'D' key
-            self.x += self.speed
-            self.walking = True
-            self.direction = "right"
-
-        # Ensure the player stays within the screen bounds
-        if self.x < 0:  # Don't allow moving past the left edge
-            self.x = 0
-        if self.x + SPRITE_WIDTH * SCALE_FACTOR > screen_width:  # Don't allow moving past the right edge
-            self.x = screen_width - SPRITE_WIDTH * SCALE_FACTOR
-
-        if keys[pygame.K_SPACE] and self.on_ground:  # Jump with 'Spacebar'
-            self.jumping = True
-            self.velocity_y = JUMP_STRENGTH
-            self.on_ground = False
-
-        if self.walking and not self.jumping:
-            if self.running:
-                self.animate_run()  # Animate running if running
-            else:
-                self.animate_walk()  # Animate walking if not running
-
-    def jump(self, screen_height):
-        # Apply gravity when jumping
-        if self.jumping:
-            self.y += self.velocity_y
-            self.velocity_y += GRAVITY
-
-            # Ensure the player stays within the screen bounds (for vertical movement)
-            if self.y >= screen_height - SPRITE_HEIGHT * SCALE_FACTOR:  # Prevent falling below the ground
-                self.y = screen_height - SPRITE_HEIGHT * SCALE_FACTOR
-                self.jumping = False
-                self.on_ground = True
-                self.current_frame = 0  # Reset frame after landing
-
-            if self.y < 0:  # Prevent jumping above the screen's top boundary
-                self.y = 0
-
-            self.animate_jump()
-
-    def animate_walk(self):
-        self.current_frame += 0.03  # Adjust animation speed for walking
-        if self.current_frame >= NUM_WALK_FRAMES:
-            self.current_frame = 0  # Ensure the frame resets when walking
-
-    def animate_run(self):
-        self.current_frame += 0.04  # Adjust animation speed for running (a bit faster than walking)
-        if self.current_frame >= NUM_RUN_FRAMES:
-            self.current_frame = 0  # Ensure the frame resets when running
-
-    def animate_jump(self):
-        self.current_frame += 0.005  # Slow down the frame switch rate during jump for smoother effect
-        if self.current_frame >= NUM_JUMP_FRAMES:
-            self.current_frame = NUM_JUMP_FRAMES - 1  # Cap the index to the last jump frame
-
-    def animate_idle(self):
-        self.current_frame += 0.01  # Slower animation speed for idling
-        if self.current_frame >= NUM_IDLE_FRAMES:
-            self.current_frame = 0  # Ensure the frame resets when idling
+    def update(self):
+        # Move the rock in the direction it was thrown
+        self.x += self.speed if self.direction == "right" else -self.speed
 
     def draw(self, screen):
-        if self.jumping:  # Draw jumping animation if jumping
-            frame = jump_frames[int(self.current_frame)]
-        elif self.walking:  # Draw walking or running animation
-            if self.running:
-                frame = run_frames[int(self.current_frame)]  # Use run frames if running
+        # Draw the rock on the screen
+        screen.blit(self.image, (self.x, self.y))
+
+# Hero class to manage the hero's state and animation
+class Hero:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.action = "idle"
+        self.direction = "right"
+        self.current_frame = 0
+        self.velocity_y = 0
+        self.on_ground = True
+        self.walking = False
+        self.running = False
+        self.width = animations["idle"][0].get_width()  # Width of hero sprite
+        self.height = animations["idle"][0].get_height()  # Height of hero sprite
+        self.rocks = []  # List to hold rocks thrown by the hero
+        self.last_throw_time = 0  # Last time the throw was used
+
+    def update(self, keys, mouse_buttons):
+        current_time = time.time()  # Current time for handling delays
+        previous_action = self.action
+        self.action = "idle"
+        self.walking = False
+        self.running = False
+
+        # Movement
+        speed = WALK_SPEED
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:  # Sprinting with Shift key
+            speed = RUN_SPEED
+            self.running = True
+
+        if keys[pygame.K_d]:  # Move right
+            self.x += speed
+            self.direction = "right"
+            self.walking = True
+        elif keys[pygame.K_a]:  # Move left
+            self.x -= speed
+            self.direction = "left"
+            self.walking = True
+
+        # Jumping with Space key
+        if keys[pygame.K_SPACE] and self.on_ground:
+            self.velocity_y = -10
+            self.on_ground = False
+            self.current_frame = 0  # Reset frame for jump start
+
+        # Apply gravity
+        self.y += self.velocity_y
+        self.velocity_y += 0.3  # Gravity effect
+
+        # Prevent the player from going out of bounds horizontally
+        if self.x < 0:
+            self.x = 0
+        elif self.x + self.width > SCREEN_WIDTH:
+            self.x = SCREEN_WIDTH - self.width
+
+        # Prevent the player from going out of bounds vertically
+        if self.y >= SCREEN_HEIGHT - self.height:
+            self.y = SCREEN_HEIGHT - self.height
+            self.on_ground = True
+            self.velocity_y = 0
+
+        # Throwing with left-click (mouse button 1) with a 0.5-second delay
+        if mouse_buttons[0]:  # Left-click
+            if current_time - self.last_throw_time >= 0.5:  # 0.5 second delay
+                self.action = "throw"
+                rock_x = self.x + (self.width if self.direction == "right" else -16 * SCALE_FACTOR)
+                rock_y = self.y + self.height // 2
+                self.rocks.append(Rock(rock_x, rock_y, self.direction))  # Use rock_image for throw
+                self.last_throw_time = current_time  # Reset the timer for throw
+
+        # Determine action based on state
+        if self.action not in ["throw"]:
+            # If airborne, show sprint animation if sprinting
+            if not self.on_ground:
+                if self.running:
+                    self.action = "run"  # Show sprint (run) animation in air if sprinting
+                else:
+                    self.action = "walk" if self.walking else "idle"
             else:
-                frame = walk_frames[int(self.current_frame)]  # Use walk frames if walking
-        else:  # Draw idle animation immediately when not walking or jumping
-            self.animate_idle()  # Advance idle frames
-            frame = idle_frames[int(self.current_frame)]
+                # Grounded state
+                if self.walking:
+                    self.action = "run" if self.running else "walk"
+                else:
+                    self.action = "idle"
 
+        # Update frame index based on movement speed (faster for running)
+        if self.running:
+            self.current_frame += 0.3  # Faster frame progression for sprinting
+        else:
+            self.current_frame += 0.2  # Normal frame progression for walking
+
+        if self.current_frame >= len(animations[self.action]):
+            self.current_frame = 0  # Reset frame index after reaching the end
+
+        # Update each rock's position
+        for rock in self.rocks:
+            rock.update()
+
+    def draw(self, screen):
+        # Draw the hero
+        frame = animations[self.action][int(self.current_frame)]
         if self.direction == "left":
-            frame = pygame.transform.flip(frame, True, False)  # Flip for left movement
-
+            frame = pygame.transform.flip(frame, True, False)
         screen.blit(frame, (self.x, self.y))
+
+        # Draw each rock
+        for rock in self.rocks:
+            rock.draw(screen)
+
+# Main game loop
+hero = Hero(100, SCREEN_HEIGHT - 100)
+clock = pygame.time.Clock()
+running = True
+
+while running:
+    screen.fill((30, 30, 30))  # Clear the screen with a dark background
+
+    keys = pygame.key.get_pressed()
+    mouse_buttons = pygame.mouse.get_pressed()
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Update hero state and draw
+    hero.update(keys, mouse_buttons)
+    hero.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(60)  # Control the frame rate
+
+pygame.quit()

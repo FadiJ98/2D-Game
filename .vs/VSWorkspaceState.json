@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\2D Game Images",
+    "\\2D Game Images\\Heros",
+    "\\2D Game Images\\Heros\\With_Rock",
+    "\\2D Game Images\\Heros\\With_Rock\\Tiny_Dude_Hero_With_Rock"
   ],
-  "SelectedNode": "\\Terrain.py",
+  "SelectedNode": "\\Tiny_Dude_Hero.py",
   "PreviewInSolutionExplorer": false
 }
