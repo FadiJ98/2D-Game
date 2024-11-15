@@ -92,6 +92,7 @@ class Hero:
         self.width = animations["idle"][0].get_width()  # Width of hero sprite
         self.height = animations["idle"][0].get_height()  # Height of hero sprite
         self.rocks = []  # List to hold rocks thrown by the hero
+        self.rocks = [rock for rock in self.rocks if 0 <= rock.x <= SCREEN_WIDTH]
         self.last_throw_time = 0  # Last time the throw was used
 
     def update(self, keys, mouse_buttons):
@@ -164,7 +165,7 @@ class Hero:
 
         # Update frame index based on movement speed (faster for running)
         if self.running:
-            self.current_frame += 0.3  # Faster frame progression for sprinting
+            self.current_frame += 0.5  # Faster frame progression for sprinting
         else:
             self.current_frame += 0.2  # Normal frame progression for walking
 
