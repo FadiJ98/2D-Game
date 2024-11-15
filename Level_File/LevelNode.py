@@ -2,6 +2,7 @@
 import pygame
 import sys
 import os
+import Terrain
 
 class LevelNode:
     def __init__(self, worldID, levelID, Name):
@@ -16,6 +17,11 @@ class LevelNode:
         self.rightLevel = None #This is a pointer to the level to the left of this level.
         self.upLevel = None #This is a pointer to the level to the left of this level.
         self.downLevel = None #This is a pointer to the level to the left of this level.
+        self.initMap = None #This will be a 2d array containing relevant data about about this level's terrain and collision layout.
+        self.terrainMap = None #This will be a 2d array containing terrain object data.
+
+        #Ignore everything related to collisionMap. Once I finish adapting to sprites it will become defunct.
+        self.collisionMap = None #This will be a 2d array contianing pygame shapes that will act as collision boxes for players and monsters.
     
     
     def addLink(self,direction,Node):
@@ -32,4 +38,26 @@ class LevelNode:
         
     def setAvailability(self,availability):
             self.levelAvailable = availability
+
+    def setLevelMap(self,inMap):
+        self.initMap = inMap
+
+    def createLevel(self):
+        if self.availability == None: 
+            print("Level Not available, did not load.")
+            return
+
+        #Here we loop through the initMap and use it's data to construct collision boxes and terrain objects.
+        for i in range(self.initMap.length()):
+            for j in range(self.initMap.length()):
+                
+                #This section will be heavily modified Once I adapt to using sprites.
+                match self.initMap[i][j]:
+                    case 0: #when initMap is 0, that means that no collision boxes nor terrain objects are generated there.
+                        self.collisionMap[i][j] = None 
+                        self.terrainMap[i][j] = None
+
+                    case 1: #when initMap is 1, that means that this is a standard terrain block.
+                        self.collisionMap[i][j] = pygame.Rect(i*20,j*20,20,20)
+                        self.terrainMap[i][j] = Terrain(1)
 
