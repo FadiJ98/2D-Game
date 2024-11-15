@@ -7,7 +7,7 @@ pygame.init()
 
 # Define global variables
 current_frame = 0
-music_volume = 0.5  # Initial music volume (50%)
+music_volume = 0.2  # Initial music volume (50%)
 sfx_volume = 0.5  # Initial SFX volume (50%)
 max_volume = 1.0  # Maximum volume in pygame is 1.0
 effects_enabled = True  # Initial state of effects

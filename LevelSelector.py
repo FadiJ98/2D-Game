@@ -2,7 +2,7 @@ from turtle import Screen
 import pygame
 import sys
 import os
-from Level_File import LevelNode
+from Level_File.LevelNode import LevelNode
 
 # Initialize Pygame
 pygame.init()
