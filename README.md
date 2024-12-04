@@ -1,5 +1,4 @@
 #TINY ADVENTURE
-test
 #description: 
 	# Tiny Adventure is an engaging 2D platformer game where players embark on
 	# a thrilling journey through a series of challenging levels.
