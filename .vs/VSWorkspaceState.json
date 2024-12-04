@@ -1,11 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\2D Game Images",
-    "\\2D Game Images\\Heros",
-    "\\2D Game Images\\Level_Tiles_Sets",
-    "\\2D Game Images\\Level_Tiles_Sets\\Level_1"
+    "\\Level_File"
   ],
-  "SelectedNode": "\\Tiny_Dude_Hero.py",
+  "SelectedNode": "\\TerrainSprites.py",
   "PreviewInSolutionExplorer": false
 }

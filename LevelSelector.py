@@ -74,24 +74,24 @@ def level_selector(screen):
     Level_Button6 = pygame.Rect(550, 250, 200, 100)
 
     # Initialization of levels
-    Level1 = LevelNode.LevelNode(1,0,"New Beginnings")
-    Level2 = LevelNode.LevelNode(1,1,"Placeholder Name")
-    Level3 = LevelNode.LevelNode(1,2,"Placeholder")
-    Level4 = LevelNode.LevelNode(1,3,"Placeholder")
-    Level5 = LevelNode.LevelNode(1,4,"Placeholder Name")
-    Level6 = LevelNode.LevelNode(1,5,"Placeholder")
-    Level7 = LevelNode.LevelNode(2,0,"Placeolder")
-    Level8 = LevelNode.LevelNode(2,1,"Placeholder Name")
-    Level9 = LevelNode.LevelNode(2,2,"Placeholder")
-    Level10 = LevelNode.LevelNode(2,3,"Placeholder")
-    Level11 = LevelNode.LevelNode(2,4,"Placeholder Name")
-    Level12 = LevelNode.LevelNode(2,5,"Placeholder")
-    Level13 = LevelNode.LevelNode(3,0,"Placeolder")
-    Level14 = LevelNode.LevelNode(3,1,"Placeholder Name")
-    Level15 = LevelNode.LevelNode(3,2,"Placeholder")
-    Level16 = LevelNode.LevelNode(3,3,"Placeholder")
-    Level17 = LevelNode.LevelNode(3,4,"Placeholder Name")
-    Level18 = LevelNode.LevelNode(3,5,"Placeholder")
+    Level1 = LevelNode(1,0,"New Beginnings")
+    Level2 = LevelNode(1,1,"Placeholder Name")
+    Level3 = LevelNode(1,2,"Placeholder")
+    Level4 = LevelNode(1,3,"Placeholder")
+    Level5 = LevelNode(1,4,"Placeholder Name")
+    Level6 = LevelNode(1,5,"Placeholder")
+    Level7 = LevelNode(2,0,"Placeolder")
+    Level8 = LevelNode(2,1,"Placeholder Name")
+    Level9 = LevelNode(2,2,"Placeholder")
+    Level10 = LevelNode(2,3,"Placeholder")
+    Level11 = LevelNode(2,4,"Placeholder Name")
+    Level12 = LevelNode(2,5,"Placeholder")
+    Level13 = LevelNode(3,0,"Placeolder")
+    Level14 = LevelNode(3,1,"Placeholder Name")
+    Level15 = LevelNode(3,2,"Placeholder")
+    Level16 = LevelNode(3,3,"Placeholder")
+    Level17 = LevelNode(3,4,"Placeholder Name")
+    Level18 = LevelNode(3,5,"Placeholder")
     Level1.setAvailability(True)
     #Level1.addLink(0, secondLevel)
     selected_level = None
@@ -111,14 +111,14 @@ def level_selector(screen):
         draw_button(screen, back_button_rect, "Back", font, mouse_pos)
         
         # Draw the bottom Banner
-        pygame.draw.rect(Screen,LIGHT_BROWN,banner_rect)
+        pygame.draw.rect(screen,LIGHT_BROWN,banner_rect)
 
         # Draw the world changing buttons
-        draw_button(Screen,left_button_rect,"Prev\nWorld",font,mouse_pos)
-        draw_button(Screen,right_button_rect,"Next\nWorld",font,mouse_pos)
+        draw_button(screen,left_button_rect,"Prev\nWorld",font,mouse_pos)
+        draw_button(screen,right_button_rect,"Next\nWorld",font,mouse_pos)
 
         # Draw the Play button
-        draw_button(Screen,play_button_rect,"Play",font,mouse_pos)
+        draw_button(screen,play_button_rect,"Play",font,mouse_pos)
 
         #Drawing Level buttons for each world. If we're currently looking at world 1 levels, we will draw those buttons. Etc.
         if curWorld == 1:

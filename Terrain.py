@@ -30,4 +30,4 @@ class Terrain:
 
     #This function will be run to draw the sprite corresponding with 
     def drawTerrain(self,Box):
-
+        pass

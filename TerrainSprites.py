@@ -7,7 +7,7 @@ class TerrainSprites(pygame.sprite.Sprite):
 
     def __init__(self,type,width,height):
         self.type = type #Determines the image and rect of this sprite.
-        self.isActive = False #
+        self.isActive = False #Determines the state of the sprite, for instance, an active door sprite is open, while an inactive door sprite is closed.awd
 
         #Initialize Sprite Constructor.
         pygame.sprite.Sprite.__init__(self)

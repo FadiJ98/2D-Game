@@ -58,6 +58,6 @@ class LevelNode:
                         self.terrainMap[i][j] = None
 
                     case 1: #when initMap is 1, that means that this is a standard terrain block.
-                        self.collisionMap[i][j] = pygame.Rect(i*20,j*20,20,20)
-                        self.terrainMap[i][j] = Terrain(1)
+                        pass #self.collisionMap[i][j] = pygame.Rect(i*20,j*20,20,20)
+                        #self.terrainMap[i][j] = Terrain(1)
 
