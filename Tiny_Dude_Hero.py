@@ -269,3 +269,31 @@ class Hero(Player):
         for rock in self.rocks:
             rock.draw(screen)
 
+
+'''hero = Hero(100, SCREEN_HEIGHT - 150)
+running = True
+clock = pygame.time.Clock()
+
+while running:
+    delta_time = clock.tick(60) / 1000
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:  # Change throw trigger to "Enter" key
+                if not hero.throwing:
+                    hero.throwing = True
+                    hero.throw_frame = 0
+                    hero.rock_spawned = False  # Reset rock release flag for new throw
+
+            if event.key == pygame.K_e:
+                hero.use_ability()
+
+    hero.update(delta_time)
+    screen.fill((0, 0, 0))
+    hero.draw(screen)
+    pygame.display.flip()
+
+pygame.quit()'''
