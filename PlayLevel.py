@@ -1,8 +1,8 @@
 import pygame
 import os
 import sys
-from Main_1.Tiny_Dude_Hero import *
-from Main_1.PlayLevel import LevelNode
+import Tiny_Dude_Hero
+import LevelNode
 import main
 
 #Pygame.init

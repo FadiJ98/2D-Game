@@ -2,7 +2,7 @@
 import pygame
 import sys
 import os
-from Main_1.PlayLevel import PlayLevel
+import LevelNode
 from TerrainSprite import TerrainSprite
 
 class LevelNode:
