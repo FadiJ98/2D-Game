@@ -13,7 +13,7 @@ Background = pygame.image.load('2D Game Images/Level_Tiles_Sets/Level_1/TileSet3
 SPAWN_POINT = (800, 900)  # Example spawn point coordinates (x=100, y=500)
 
 # Main Function
-def gameloop(Map, screen):
+def GameLoop(Map, screen):
     global running  # Declare the global variable at the start of the function
     hero = Hero(*SPAWN_POINT)  # Use the spawn point to initialize the hero's starting position
     clock = pygame.time.Clock()
