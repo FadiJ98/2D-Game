@@ -4,6 +4,7 @@ import os
 import Option
 import LevelSelector
 
+
 # Center the window on the screen
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
