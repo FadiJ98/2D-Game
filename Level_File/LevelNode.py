@@ -2,9 +2,8 @@
 import pygame
 import sys
 import os
-import Terrain
-import PlayLevel
 from TerrainSprite import TerrainSprite
+import PlayLevel
 
 class LevelNode:
     def __init__(self, worldID, levelID, Name):

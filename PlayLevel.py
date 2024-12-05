@@ -2,14 +2,12 @@ import pygame
 import os
 import sys
 import Tiny_Dude_Hero
-from Level_File.LevelNode import LevelNode
 from TerrainSprite import TerrainSprite
-import main
 
 #Pygame.init
 pygame.init()
 #This is our main loop where we will do EVERYTHING related to actually playing the game.
-screen = main.screen
+screen = pygame.display.set_mode((1920, 1080))
 
 #This implementation should be changed depending on settings.
 running = True
