@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Level_File"
+    "\\Level_File",
+    "\\Main_1"
   ],
-  "SelectedNode": "\\main.py",
+  "SelectedNode": "\\Level_File\\LevelNode.py",
   "PreviewInSolutionExplorer": false
 }

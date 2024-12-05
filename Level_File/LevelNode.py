@@ -2,8 +2,7 @@
 import pygame
 import sys
 import os
-import Terrain
-import PlayLevel
+from Main_1.PlayLevel import PlayLevel
 from TerrainSprite import TerrainSprite
 
 class LevelNode:
@@ -60,7 +59,7 @@ class LevelNode:
             screen = pygame.display.set_mode((1920, 1080))
             screen.fill((0,0,0))
             self.createLevel()
-            #PlayLevel.GameLoop(self.terrainMap)
+            PlayLevel.GameLoop(self.terrainMap)
             pass #If necessary this is where we'll enable player controls.
 
     def createLevel(self):

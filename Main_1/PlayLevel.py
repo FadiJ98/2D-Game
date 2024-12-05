@@ -1,9 +1,8 @@
 import pygame
 import os
 import sys
-import Tiny_Dude_Hero
-from Level_File.LevelNode import LevelNode
-from TerrainSprite import TerrainSprite
+from Main_1.Tiny_Dude_Hero import *
+from Main_1.PlayLevel import LevelNode
 import main
 
 #Pygame.init
@@ -24,6 +23,7 @@ def GameLoop(Map):
         for i in range(len(Map)):
             for j in range(len(Map[i])):
                 Map[i][j].Draw()
+
 
 
 

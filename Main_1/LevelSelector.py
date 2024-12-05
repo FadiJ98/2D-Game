@@ -3,7 +3,6 @@ import pygame
 import sys
 import os
 from Level_File.LevelNode import LevelNode
-from TerrainSprite import TerrainSprite
 
 # Initialize Pygame
 pygame.init()

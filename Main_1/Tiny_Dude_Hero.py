@@ -272,7 +272,7 @@ class Hero(Player):
             rock.draw(screen)
 
 # Main game loop 
-hero = Hero(100, SCREEN_HEIGHT - 150)
+'''hero = Hero(100, SCREEN_HEIGHT - 150)
 running = True
 clock = pygame.time.Clock()
 
@@ -297,4 +297,4 @@ while running:
     hero.draw(screen)
     pygame.display.flip()
 
-pygame.quit()
+pygame.quit()'''
