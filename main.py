@@ -202,4 +202,5 @@ def main_menu():
         clock.tick(frame_rate)
 
 # Run the menu
+print("Start of game")
 main_menu()
