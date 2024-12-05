@@ -3,6 +3,7 @@ import pygame
 import sys
 import os
 from Level_File.LevelNode import LevelNode
+from TerrainSprite import TerrainSprite
 
 # Initialize Pygame
 pygame.init()
@@ -93,8 +94,11 @@ def level_selector(screen):
     Level17 = LevelNode(3,4,"Placeholder Name")
     Level18 = LevelNode(3,5,"Placeholder")
     Level1.setAvailability(True)
-    #Level1.addLink(0, secondLevel)
+    Level1.setLevelMap([[0,1,0],[1,0,1],[0,1,0]])
     selected_level = None
+
+    #TEST
+    testSprite = TerrainSprite(1,300,300)
 
     while True:
         if curWorld == 1:
@@ -106,6 +110,9 @@ def level_selector(screen):
 
 
         mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
+
+        #Testing Drawing Sprites
+        testSprite.Draw()
 
         # Draw the Back button
         draw_button(screen, back_button_rect, "Back", font, mouse_pos)
@@ -122,79 +129,79 @@ def level_selector(screen):
 
         #Drawing Level buttons for each world. If we're currently looking at world 1 levels, we will draw those buttons. Etc.
         if curWorld == 1:
-            if Level1.levelAvailable == True:
+            if Level1.availability == True:
                 draw_button(screen, Level_Button1, "1", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button1, "1", font, mouse_pos)
-            if Level2.levelAvailable == True:
+            if Level2.availability == True:
                 draw_button(screen, Level_Button2, "2", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button2, "2", font, mouse_pos)
-            if Level3.levelAvailable == True:
+            if Level3.availability == True:
                 draw_button(screen, Level_Button3, "3", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button3, "3", font, mouse_pos)
-            if Level4.levelAvailable == True:
+            if Level4.availability == True:
                 draw_button(screen, Level_Button4, "4", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button4, "4", font, mouse_pos)
-            if Level5.levelAvailable == True:
+            if Level5.availability == True:
                 draw_button(screen, Level_Button5, "5", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button5, "5", font, mouse_pos)
-            if Level6.levelAvailable == True:
+            if Level6.availability == True:
                 draw_button(screen, Level_Button6, "6", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button6, "6", font, mouse_pos)
 
         if curWorld == 2:
-            if Level7.levelAvailable == True:
+            if Level7.availability == True:
                 draw_button(screen, Level_Button1, "7", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button1, "7", font, mouse_pos)
-            if Level8.levelAvailable == True:
+            if Level8.availability == True:
                 draw_button(screen, Level_Button2, "8", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button2, "8", font, mouse_pos)
-            if Level9.levelAvailable == True:
+            if Level9.availability == True:
                 draw_button(screen, Level_Button3, "9", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button3, "9", font, mouse_pos)
-            if Level10.levelAvailable == True:
+            if Level10.availability == True:
                 draw_button(screen, Level_Button4, "10", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button4, "10", font, mouse_pos)
-            if Level11.levelAvailable == True:
+            if Level11.availability == True:
                 draw_button(screen, Level_Button5, "11", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button5, "11", font, mouse_pos)
-            if Level12.levelAvailable == True:
+            if Level12.availability == True:
                 draw_button(screen, Level_Button6, "12", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button6, "12", font, mouse_pos)
 
         if curWorld == 3:
-            if Level13.levelAvailable == True:
+            if Level13.availability == True:
                 draw_button(screen, Level_Button1, "13", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button1, "13", font, mouse_pos)
-            if Level14.levelAvailable == True:
+            if Level14.availability == True:
                 draw_button(screen, Level_Button2, "14", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button2, "14", font, mouse_pos)
-            if Level15.levelAvailable == True:
+            if Level15.availability == True:
                 draw_button(screen, Level_Button3, "15", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button3, "15", font, mouse_pos)
-            if Level16.levelAvailable == True:
+            if Level16.availability == True:
                 draw_button(screen, Level_Button4, "16", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button4, "16", font, mouse_pos)
-            if Level17.levelAvailable == True:
+            if Level17.availability == True:
                 draw_button(screen, Level_Button5, "17", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button5, "17", font, mouse_pos)
-            if Level18.levelAvailable == True:
+            if Level18.availability == True:
                 draw_button(screen, Level_Button6, "18", font, mouse_pos)
             else:
                 draw_button_locked(screen, Level_Button6, "18", font, mouse_pos)
@@ -228,76 +235,77 @@ def level_selector(screen):
                 if curWorld == 1:
                     if Level_Button1.collidepoint(mouse_pos):
                         #Change bottom banner to include level information.
-                        if Level1.levelAvailable == True:
-                            Level1.StartLevel#Initialize Level 1
+                        if Level1.availability == True:
+                            print("TEST Level Should Start")
+                            Level1.StartLevel() #Initialize Level 1
                     if Level_Button2.collidepoint(mouse_pos):
-                        if Level2.levelAvailable == True:
+                        if Level2.availability == True:
                             #Initialize Level 2
                             Level2.StartLevel
                     if Level_Button3.collidepoint(mouse_pos):
-                        if Level3.levelAvailable == True:
+                        if Level3.availability == True:
                             #Initialize Level 3
                             Level3.StartLevel
                     if Level_Button4.collidepoint(mouse_pos):
-                        if Level4.levelAvailable == True:
+                        if Level4.availability == True:
                             #Initialize Level 4
                             Level4.StartLevel
                     if Level_Button5.collidepoint(mouse_pos):
-                        if Level5.levelAvailable == True:
+                        if Level5.availability == True:
                             #Initialize Level 4
                             Level5.StartLevel
                     if Level_Button6.collidepoint(mouse_pos):
-                        if Level6.levelAvailable == True:
+                        if Level6.availability == True:
                             #Initialize Level 3
                             Level6.StartLevel
                 
                 if curWorld == 2:
                     if Level_Button1.collidepoint(mouse_pos):
-                        if Level7.levelAvailable == True:
+                        if Level7.availability == True:
                             Level7.StartLevel#Initialize Level 7
                     if Level_Button2.collidepoint(mouse_pos):
-                        if Level8.levelAvailable == True:
+                        if Level8.availability == True:
                             #Initialize Level 8
                             Level8.StartLevel
                     if Level_Button3.collidepoint(mouse_pos):
-                        if Level9.levelAvailable == True:
+                        if Level9.availability == True:
                             #Initialize Level 9
                             Level9.StartLevel
                     if Level_Button4.collidepoint(mouse_pos):
-                        if Level10.levelAvailable == True:
+                        if Level10.availability == True:
                             #Initialize Level 10
                             Level10.StartLevel
                     if Level_Button5.collidepoint(mouse_pos):
-                        if Level11.levelAvailable == True:
+                        if Level11.availability == True:
                             #Initialize Level 11
                             Level11.StartLevel
                     if Level_Button6.collidepoint(mouse_pos):
-                        if Level12.levelAvailable == True:
+                        if Level12.availability == True:
                             #Initialize Level 12
                             Level12.StartLevel
 
                 if curWorld == 3:
                     if Level_Button1.collidepoint(mouse_pos):
-                        if Level13.levelAvailable == True:
+                        if Level13.availability == True:
                             Level13.StartLevel#Initialize Level 13
                     if Level_Button2.collidepoint(mouse_pos):
-                        if Level14.levelAvailable == True:
+                        if Level14.availability == True:
                             #Initialize Level 14
                             Level14.StartLevel
                     if Level_Button3.collidepoint(mouse_pos):
-                        if Level15.levelAvailable == True:
+                        if Level15.availability == True:
                             #Initialize Level 15
                             Level15.StartLevel
                     if Level_Button4.collidepoint(mouse_pos):
-                        if Level16.levelAvailable == True:
+                        if Level16.availability == True:
                             #Initialize Level 16
                             Level16.StartLevel
                     if Level_Button5.collidepoint(mouse_pos):
-                        if Level17.levelAvailable == True:
+                        if Level17.availability == True:
                             #Initialize Level 17
                             Level17.StartLevel
                     if Level_Button6.collidepoint(mouse_pos):
-                        if Level18.levelAvailable == True:
+                        if Level18.availability == True:
                             #Initialize Level 18
                             Level18.StartLevel
                     
