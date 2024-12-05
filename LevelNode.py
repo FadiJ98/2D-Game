@@ -72,10 +72,26 @@ class LevelNode:
         for i in range(len(self.initMap)):
             for j in range(len(self.initMap[i])):
                 #This section will be heavily modified Once I adapt to using sprites.
+                Type = self.initMap[i][j]
+                self.terrainMap[i][j] = TerrainSprite(Type,i*64,j*64)
+                 
+                ''' #Getto Block Commenting Method
                 match self.initMap[i][j]:
                     case 0: #when initMap is 0, that means that no collision boxes nor terrain objects are generated there.
-                        self.terrainMap[i][j] = TerrainSprite(0,i*16,j*16)
+                        self.terrainMap[i][j] = TerrainSprite(0,i*64,j*64)
 
-                    case 1: #when initMap is 1, that means that this is a standard terrain block.
-                        self.terrainMap[i][j] = TerrainSprite(1,i*16,j*16)
+                    #Cases 1-2 are for regular solid terrain blocks, the differences are between what image they use.
+                    case 1: #when initMap is 1, that means that this is a standard top terrain (grass) block.
+                        self.terrainMap[i][j] = TerrainSprite(1,i*64,j*64)
+                    case 1: #when initMap is 1, that means that this is a standard top terrain (grass) block.
+                        self.terrainMap[i][j] = TerrainSprite(1,i*64,j*64)
+                    case 1: #when initMap is 1, that means that this is a standard top terrain (grass) block.
+                        self.terrainMap[i][j] = TerrainSprite(1,i*64,j*64)
+                    case 1.1: #when initMap is 1, that means that this is a standard inner terrain block.
+                        self.terrainMap[i][j] = TerrainSprite(1.1,i*64,j*64)
+                    case 1.11: #when initMap is 1, that means that this is a standard left edge terrain block.
+                        self.terrainMap[i][j] = TerrainSprite(1.2,i*64,j*64)
+                    case 1.12: #when initMap is 1, that means that this is a standard right edge terrain block.
+                        self.terrainMap[i][j] = TerrainSprite(1.3,i*64,j*64)
+                '''
 

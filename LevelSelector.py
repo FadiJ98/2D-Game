@@ -18,9 +18,6 @@ RED = (255, 0, 0)
 HIGHLIGHT_COLOR = (240, 128, 128)
 
 # Screen dimensions
-screen_width = 1920
-screen_height = 1080
-screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Level Selector Map")
 
 # Draw rounded rectangle function
@@ -94,7 +91,16 @@ def level_selector(screen):
     Level17 = LevelNode(3,4,"Placeholder Name")
     Level18 = LevelNode(3,5,"Placeholder")
     Level1.setAvailability(True)
-    Level1.setLevelMap([[1]*5,[1,0,0,0,1],[1,1,1,0,1],[1,0,0,0,1],[1,1,1,1,1]])
+    #Each of the following lines will represent an inverted column of the level.
+    #We have a height of 17 blocks, and a width of 30 blocks.
+    Level1.setLevelMap([[1],[1],[1],[1],[1],[1],[1],
+                        [2,2.1,2.1,1.1],[2,2,2,1],[2,2.2,2.2,1.2],
+                        [1],[1],[1],[1],[1],[1],[1],[1],[1],[1],
+                        [2,2.1,2.1,1.1],[2,2,2,1],[2,2.2,2.2,1.2],
+                        [1],[1],[2,2.1,2.1,2.1,2.1,1.1],[2,2,2,2,2,1],[2,2,2,2,2,1],[2,2,2,2,2,1],[2,2,2,2,2,1]
+        
+        
+        ])
     selected_level = None
 
     #TEST
