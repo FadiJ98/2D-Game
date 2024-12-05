@@ -28,44 +28,44 @@ class TerrainSprite(pygame.sprite.Sprite):
                 pass
             case 1:
                 #For Grass Block Center
-                self.image = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile1.png"))
+                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile1.png"))
                 self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
                 self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
                 self.rect.y = y #Same as above but for Y position.
             case 1.1:
                 #For Grass Block left
-                self.image = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile3.png"))
+                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile3.png"))
                 self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
                 self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
                 self.rect.y = y #Same as above but for Y position.
             case 1.2:
                 #For Grass Block right
-                self.image = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile4.png"))
+                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile4.png"))
                 self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
                 self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
                 self.rect.y = y #Same as above but for Y position.
             case 2: 
                 #For Dirt Block Center
-                self.image = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile2.png"))
+                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile2.png"))
                 self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
                 self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
                 self.rect.y = y #Same as above but for Y position.
             case 2.1: 
                 #For Dirt Block Left
-                self.image = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile5.png"))
+                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile5.png"))
                 self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
                 self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
                 self.rect.y = y #Same as above but for Y position.
             case 2.2: 
                 #For Dirt Block Right
-                self.image = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile6.png"))
+                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile6.png"))
                 self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
                 self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
                 self.rect.y = y #Same as above but for Y position.
             case 3:
                 pass #Write some code for a platform which can be passed through from the bottom but not fall through from the top.
             case 98: 
-                pass #This section will stay like this as terrain type 98 is the player spawn point, which will have no collision cause it's just where the player starts.
+                pass
             case 99:
                 if self.isActive == True:
                     pass #Write some code for the end goal
