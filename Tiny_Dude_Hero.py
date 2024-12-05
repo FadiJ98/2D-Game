@@ -73,6 +73,7 @@ class Rock:
         # Move the rock in the direction it was thrown
         self.x += self.speed if self.direction == "right" else -self.speed
 
+
     def draw(self, screen):
         # Draw the rock on the screen
         screen.blit(self.image, (self.x, self.y))
