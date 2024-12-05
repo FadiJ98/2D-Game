@@ -2,8 +2,7 @@ from turtle import Screen
 import pygame
 import sys
 import os
-from Level_File.LevelNode import LevelNode
-from TerrainSprite import TerrainSprite
+import LevelNode
 
 # Initialize Pygame
 pygame.init()
