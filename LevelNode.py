@@ -2,6 +2,7 @@
 import pygame
 import sys
 import os
+from EndFlag import EndFlag
 from TerrainSprite import TerrainSprite
 import PlayLevel
 
@@ -73,6 +74,9 @@ class LevelNode:
             for j in range(len(self.initMap[i])):
                 #This section will be heavily modified Once I adapt to using sprites.
                 Type = self.initMap[i][j]
+                if Type == 99:
+                    self.terrainMap[i][j] = EndFlag(i*64,j*64)
+                    continue
                 self.terrainMap[i][j] = TerrainSprite(Type,i*64,j*64)
                  
                 ''' #Getto Block Commenting Method
