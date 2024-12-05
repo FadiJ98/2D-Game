@@ -2,7 +2,8 @@ from turtle import Screen
 import pygame
 import sys
 import os
-import LevelNode
+from LevelNode import LevelNode
+from TerrainSprite import TerrainSprite
 
 # Initialize Pygame
 pygame.init()
@@ -17,8 +18,8 @@ RED = (255, 0, 0)
 HIGHLIGHT_COLOR = (240, 128, 128)
 
 # Screen dimensions
-screen_width = 800
-screen_height = 600
+screen_width = 1920
+screen_height = 1080
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Level Selector Map")
 
@@ -93,12 +94,12 @@ def level_selector(screen):
     Level17 = LevelNode(3,4,"Placeholder Name")
     Level18 = LevelNode(3,5,"Placeholder")
     Level1.setAvailability(True)
-    Level1.setLevelMap([[0,1,0],[1,0,1],[0,1,0]])
+    Level1.setLevelMap([[1]*5,[1,0,0,0,1],[1,1,1,0,1],[1,0,0,0,1],[1,1,1,1,1]])
     selected_level = None
 
     #TEST
-    testSprite = TerrainSprite(1,300,300)
-
+    #testSprite = TerrainSprite(1,800,800)
+    #testBackground = TerrainSprite(0,0,0)
     while True:
         if curWorld == 1:
             screen.fill(BLACK) #Replace this with world 1 or 2 or 3 background depending on current world.
@@ -107,11 +108,10 @@ def level_selector(screen):
         elif curWorld == 3:
             screen.fill(RED)
 
+        #screen.blit(testSprite.image,testSprite.Coords)
+        #testSprite.Draw(screen)
 
         mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
-
-        #Testing Drawing Sprites
-        testSprite.Draw()
 
         # Draw the Back button
         draw_button(screen, back_button_rect, "Back", font, mouse_pos)
@@ -236,7 +236,7 @@ def level_selector(screen):
                         #Change bottom banner to include level information.
                         if Level1.availability == True:
                             print("TEST Level Should Start")
-                            Level1.StartLevel() #Initialize Level 1
+                            Level1.StartLevel(screen) #Initialize Level 1
                     if Level_Button2.collidepoint(mouse_pos):
                         if Level2.availability == True:
                             #Initialize Level 2

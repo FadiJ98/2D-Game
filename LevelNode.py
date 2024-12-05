@@ -47,19 +47,19 @@ class LevelNode:
             for j in range(len(self.initMap[i])):
                 self.terrainMap[i].append(0)
         #For testing Purposes
-        print(self.initMap, self.terrainMap)
+        #print(self.initMap, self.terrainMap)
 
-    def StartLevel(self):
-        print("TEST Level Start")
+    def StartLevel(self,screen):
+        #print("TEST Level Start")
         if self.availability == False:
-            print("level not available, did not load")
+            #print("level not available, did not load")
             return
         else:
-            print("TEST: Creating Level")
-            screen = pygame.display.set_mode((1920, 1080))
-            screen.fill((0,0,0))
+            #print("TEST: Creating Level")
+            #screen.fill((0,0,0))
             self.createLevel()
-            #PlayLevel.GameLoop(self.terrainMap)
+            #print(self.terrainMap)
+            PlayLevel.GameLoop(self.terrainMap,screen)
             pass #If necessary this is where we'll enable player controls.
 
     def createLevel(self):
@@ -68,14 +68,14 @@ class LevelNode:
             return
 
         #Here we loop through the initMap and use it's data to construct collision boxes and terrain objects.
+        
         for i in range(len(self.initMap)):
             for j in range(len(self.initMap[i])):
-                
                 #This section will be heavily modified Once I adapt to using sprites.
                 match self.initMap[i][j]:
                     case 0: #when initMap is 0, that means that no collision boxes nor terrain objects are generated there.
-                        self.terrainMap[i][j] = TerrainSprite(0,i*20,j*20)
+                        self.terrainMap[i][j] = TerrainSprite(0,i*16,j*16)
 
                     case 1: #when initMap is 1, that means that this is a standard terrain block.
-                        self.terrainMap[i][j] = TerrainSprite(1,i*20,j*20)
+                        self.terrainMap[i][j] = TerrainSprite(1,i*16,j*16)
 
