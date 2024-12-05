@@ -1,7 +1,5 @@
 import pygame
 import time
-import sys
-import os
 
 pygame.init()
 
@@ -12,7 +10,7 @@ SCALE_FACTOR = 3
 WALK_SPEED = 5
 RUN_SPEED = 8  # Increased speed for running
 
-# Set up the display
+# Initialize the screen
 fullscreen = False  # Set to True for fullscreen mode
 if fullscreen:
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -67,15 +65,14 @@ class Rock:
         self.x = x
         self.y = y
         self.direction = direction
-        self.image = rock_image
+        # Adjust the rock size to make it smaller
+        self.image = pygame.transform.scale(rock_image, (12 * SCALE_FACTOR, 12 * SCALE_FACTOR))
         self.speed = 10
 
     def update(self):
-        # Move the rock in the direction it was thrown
         self.x += self.speed if self.direction == "right" else -self.speed
 
     def draw(self, screen):
-        # Draw the rock on the screen
         screen.blit(self.image, (self.x, self.y))
 
 # Player class with stats and abilities
@@ -131,14 +128,12 @@ class Player:
             print("Ability is on cooldown!")
 
     def update(self, delta_time):
-        # Update shield timer (if time-based)
         if self.shield_active and not self.shield_hit_based:
             self.shield_timer -= delta_time
             if self.shield_timer <= 0:
                 self.shield_active = False
                 print("Time-based shield expired!")
 
-        # Update buff timer
         if self.buff_active:
             self.buff_timer -= delta_time
             if self.buff_timer <= 0:
@@ -146,14 +141,12 @@ class Player:
                 self.attack_damage = BASE_DAMAGE
                 print("Buff expired! Damage returned to normal.")
 
-        # Update ability cooldown
         if self.ability_on_cooldown:
             self.cooldown_timer -= delta_time
             if self.cooldown_timer <= 0:
                 self.ability_on_cooldown = False
                 print("Ability is ready to use again!")
 
-    # Placeholder for claiming collectables (shield and buff)
     def collect_shield(self, hit_based=False):
         self.activate_shield(hit_based)
 
@@ -173,128 +166,106 @@ class Hero(Player):
         self.on_ground = True
         self.walking = False
         self.running = False
-        self.width = animations["idle"][0].get_width()  # Width of hero sprite
-        self.height = animations["idle"][0].get_height()  # Height of hero sprite
-        self.rocks = []  # List to hold rocks thrown by the hero
-        self.last_throw_time = 0  # Last time the throw was used
+        self.width = animations["idle"][0].get_width()
+        self.height = animations["idle"][0].get_height()
+        self.rocks = []
+        self.last_throw_time = 0
+        self.throwing = False  # Track if currently throwing
+        self.throw_frame = 0  # Track throw animation frame
+        self.rock_spawned = False  # Track if the rock has been released
 
-    def update(self, keys, mouse_buttons, delta_time):
+    def update(self, delta_time):
         super().update(delta_time)
-        current_time = time.time()  # Current time for handling delays
+        current_time = time.time()
+
+        # Handle throwing (independent of other states)
+        if self.throwing:
+            self.throw_frame += 0.2
+            # Release rock during a specific frame of the throw animation
+            if not self.rock_spawned and int(self.throw_frame) == 2:  # Example: Spawn rock on 3rd frame
+                rock_x = self.x + (self.width if self.direction == "right" else -16 * SCALE_FACTOR)
+                rock_y = self.y + self.height // 2
+                self.rocks.append(Rock(rock_x, rock_y, self.direction))
+                self.rock_spawned = True  # Ensure rock is only released once during the throw
+
+            if self.throw_frame >= len(animations["throw"]):
+                self.throwing = False
+                self.throw_frame = 0
+                self.rock_spawned = False  # Reset for the next throw
+
+        # Update other actions if not interrupted
         previous_action = self.action
         self.action = "idle"
         self.walking = False
         self.running = False
 
-        # Movement
+        keys = pygame.key.get_pressed()
+
         speed = WALK_SPEED
-        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:  # Sprinting with Shift key
+        if keys[pygame.K_LSHIFT] or keys[pygame.K_RSHIFT]:
             speed = RUN_SPEED
             self.running = True
 
-        if keys[pygame.K_d]:  # Move right
+        if keys[pygame.K_d]:
             self.x += speed
             self.direction = "right"
             self.walking = True
-        elif keys[pygame.K_a]:  # Move left
+        elif keys[pygame.K_a]:
             self.x -= speed
             self.direction = "left"
             self.walking = True
 
-        # Jumping with Space key
         if keys[pygame.K_SPACE] and self.on_ground:
             self.velocity_y = -10
             self.on_ground = False
-            self.current_frame = 0  # Reset frame for jump start
+            self.current_frame = 0
 
-        # Apply gravity
+        # Gravity and boundary checks
         self.y += self.velocity_y
-        self.velocity_y += 0.3  # Gravity effect
+        self.velocity_y += 0.3
 
-        # Prevent the player from going out of bounds horizontally
         if self.x < 0:
             self.x = 0
         elif self.x + self.width > SCREEN_WIDTH:
             self.x = SCREEN_WIDTH - self.width
 
-        # Prevent the player from going out of bounds vertically
         if self.y >= SCREEN_HEIGHT - self.height:
             self.y = SCREEN_HEIGHT - self.height
             self.on_ground = True
             self.velocity_y = 0
 
-        # Throwing with left-click (mouse button 1) with a 0.5-second delay
-        if mouse_buttons[0]:  # Left-click
-            if current_time - self.last_throw_time >= 0.5:  # 0.5 second delay
-                self.action = "throw"
-                rock_x = self.x + (self.width if self.direction == "right" else -16 * SCALE_FACTOR)
-                rock_y = self.y + self.height // 2
-                self.rocks.append(Rock(rock_x, rock_y, self.direction))  # Use rock_image for throw
-                self.last_throw_time = current_time  # Reset the timer for throw
+        # Set the base action
+        if not self.on_ground:
+            self.action = "walk" if self.walking else "idle"
+        elif self.walking:
+            self.action = "run" if self.running else "walk"
 
-        # Determine action based on state
-        if self.action not in ["throw"]:
-            # If airborne, show sprint animation if sprinting
-            if not self.on_ground:
-                if self.running:
-                    self.action = "run"  # Show sprint (run) animation in air if sprinting
-                else:
-                    self.action = "walk" if self.walking else "idle"
-            else:
-                # Grounded state
-                if self.walking:
-                    self.action = "run" if self.running else "walk"
-                else:
-                    self.action = "idle"
-
-        # Update frame index based on movement speed (faster for running)
-        if self.running:
-            self.current_frame += 0.5  # Faster frame progression for sprinting
-        else:
-            self.current_frame += 0.2  # Normal frame progression for walking
-
+        # Update animation frame for the base action
+        self.current_frame += 0.2
         if self.current_frame >= len(animations[self.action]):
-            self.current_frame = 0  # Reset frame index after reaching the end
+            self.current_frame = 0
 
-        # Update each rock's position
+        # Update rocks
         for rock in self.rocks:
             rock.update()
 
     def draw(self, screen):
-        # Draw the hero
-        frame = animations[self.action][int(self.current_frame)]
+        # Determine which frame to draw
+        if self.throwing:
+            # Only draw the throw animation if throwing
+            frame = animations["throw"][int(self.throw_frame)]
+        else:
+            # Otherwise, draw the current frame of the base action
+            frame = animations[self.action][int(self.current_frame)]
+
+        # Flip the frame if the hero is facing left
         if self.direction == "left":
             frame = pygame.transform.flip(frame, True, False)
+
+        # Draw the determined frame
         screen.blit(frame, (self.x, self.y))
 
-        # Draw each rock
+        # Draw all thrown rocks
         for rock in self.rocks:
             rock.draw(screen)
 
-# Main game loop 
-'''hero = Hero(100, SCREEN_HEIGHT - 150)
-running = True
-clock = pygame.time.Clock()
-
-while running:
-    delta_time = clock.tick(60) / 1000  # Convert milliseconds to seconds
-
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-        # Keyboard event for activating ability
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_e:  # Use ability with 'E' key
-                hero.use_ability()
-
-    keys = pygame.key.get_pressed()
-    mouse_buttons = pygame.mouse.get_pressed()
-
-    hero.update(keys, mouse_buttons, delta_time)
-    screen.fill((0, 0, 0))  # Clear the screen with black
-    hero.draw(screen)
-    pygame.display.flip()
-
-pygame.quit()'''
