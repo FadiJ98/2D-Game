@@ -5,6 +5,7 @@ import Option
 import LevelSelector
 
 
+
 # Center the window on the screen
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -75,7 +76,7 @@ def render_title_with_sword(screen, x, y):
 
     sword_x_offset, sword_y_offset = -220, 350
     sword_x, sword_y = x + sword_x_offset, y + sword_y_offset
-    
+
     SHandle_x_offset, SHandle_y_offset = -320, 350
     SHandle_x, SHandle_y = x + SHandle_x_offset, y + SHandle_y_offset
 

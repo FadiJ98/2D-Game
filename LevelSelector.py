@@ -1,9 +1,6 @@
-from turtle import Screen
 import pygame
 import sys
-import os
 from LevelNode import LevelNode
-from TerrainSprite import TerrainSprite
 
 # Initialize Pygame
 pygame.init()
@@ -17,200 +14,76 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 HIGHLIGHT_COLOR = (240, 128, 128)
 
-# Screen dimensions
-pygame.display.set_caption("Level Selector Map")
+# Helper functions
+def draw_button(surface, rect, text, font, mouse_pos, locked=False):
+    """Draw a button with hover and locked states."""
+    color = GRAY if locked else (HIGHLIGHT_COLOR if rect.collidepoint(mouse_pos) else LIGHT_BROWN)
+    pygame.draw.rect(surface, color, rect, border_radius=20)
 
-# Draw rounded rectangle function
-def draw_rounded_rect(surface, color, rect, border_radius):
-    pygame.draw.rect(surface, color, rect, border_radius=border_radius)
-
-# Draw button function
-def draw_button(surface, rect, text, font, mouse_pos):
-    if rect.collidepoint(mouse_pos):
-        draw_rounded_rect(surface, HIGHLIGHT_COLOR, rect, border_radius=20)
-    else:
-        draw_rounded_rect(surface, LIGHT_BROWN, rect, border_radius=20)
-
-    text_surf = font.render(text, True, BLACK)
-    surface.blit(text_surf, (rect.x + (rect.width - text_surf.get_width()) // 2, 
+    text_color = BLACK if not locked else WHITE
+    text_surf = font.render(text, True, text_color)
+    surface.blit(text_surf, (rect.x + (rect.width - text_surf.get_width()) // 2,
                              rect.y + (rect.height - text_surf.get_height()) // 2))
 
-def draw_button_locked(surface, rect, text, font, mouse_pos):
-    draw_rounded_rect(surface, GRAY, rect, border_radius=20)
+def draw_world(screen, levels, mouse_pos, font, center_x, center_y):
+    """Draw level buttons, centered horizontally and vertically."""
+    button_width, button_height = 150, 75  # Adjusted button size
+    padding_x, padding_y = 30, 30
+    total_width = (button_width + padding_x) * 3 - padding_x
+    total_height = (button_height + padding_y) * 2 - padding_y
 
-    text_surf = font.render(text, True, BLACK)
-    surface.blit(text_surf, (rect.x + (rect.width - text_surf.get_width()) // 2, 
-                             rect.y + (rect.height - text_surf.get_height()) // 2))
+    start_x = center_x - total_width // 2
+    start_y = center_y - total_height // 2
 
-# Main function of LevelSelector with Back button functionality
+    for idx, level in enumerate(levels):
+        col = idx % 3
+        row = idx // 3
+        button_rect = pygame.Rect(
+            start_x + col * (button_width + padding_x),
+            start_y + row * (button_height + padding_y),
+            button_width, button_height
+        )
+        level.button_rect = button_rect
+        draw_button(screen, button_rect, level.levelName, font, mouse_pos, locked=not level.availability)
+
+# Main Level Selector function
 def level_selector(screen):
-    # Initialize font for the button text
-    font = pygame.font.SysFont(None, 36)
+    """Level Selector screen logic."""
+    font = pygame.font.SysFont(None, 36)  # Adjusted font size
 
-    #Variable to control which world is selected.
-    curWorld = 1
+    # Define UI elements
+    screen_width, screen_height = screen.get_size()
+    button_width, button_height = 160, 80  # Smaller button size
+    back_button_rect = pygame.Rect(20, 20, button_width, button_height)
+    play_button_rect = pygame.Rect(screen_width // 2 - button_width, screen_height - 150, button_width * 2, button_height)
+    left_button_rect = pygame.Rect(20, screen_height - 150, button_width * 2, button_height)
+    right_button_rect = pygame.Rect(screen_width - 350, screen_height - 150, button_width * 2, button_height)  # Adjusted to move left by 20px
 
-    # Back button
-    back_button_rect = pygame.Rect(20, 20, 100, 50)  # Positioned at the top-left
+    # Initialize levels
+    levels_by_world = {
+        1: [LevelNode(1, i, f"Level {i+1}") for i in range(6)],
+        2: [LevelNode(2, i, f"Level {i+7}") for i in range(6)],
+        3: [LevelNode(3, i, f"Level {i+13}") for i in range(6)]
+    }
+    levels_by_world[1][0].setAvailability(True)  # Unlock the first level
 
-    # Bottom Banner Rectangle
-    banner_rect = pygame.Rect(0,400,800,200)
-
-    # Play Button
-    play_button_rect = pygame.Rect(550,475,100,50)
-
-    # World Change Buttons
-    left_button_rect = pygame.Rect(20,475,100,50)
-    right_button_rect = pygame.Rect(680,475,100,50)
-
-    # Level Buttons
-    Level_Button1 = pygame.Rect(50, 100, 200, 100)
-    Level_Button2 = pygame.Rect(300, 100, 200, 100)
-    Level_Button3 = pygame.Rect(550, 100, 200, 100)
-    Level_Button4 = pygame.Rect(50, 250, 200, 100)
-    Level_Button5 = pygame.Rect(300, 250, 200, 100)
-    Level_Button6 = pygame.Rect(550, 250, 200, 100)
-
-    # Initialization of levels
-    Level1 = LevelNode(1,0,"New Beginnings")
-    Level2 = LevelNode(1,1,"Placeholder Name")
-    Level3 = LevelNode(1,2,"Placeholder")
-    Level4 = LevelNode(1,3,"Placeholder")
-    Level5 = LevelNode(1,4,"Placeholder Name")
-    Level6 = LevelNode(1,5,"Placeholder")
-    Level7 = LevelNode(2,0,"Placeolder")
-    Level8 = LevelNode(2,1,"Placeholder Name")
-    Level9 = LevelNode(2,2,"Placeholder")
-    Level10 = LevelNode(2,3,"Placeholder")
-    Level11 = LevelNode(2,4,"Placeholder Name")
-    Level12 = LevelNode(2,5,"Placeholder")
-    Level13 = LevelNode(3,0,"Placeolder")
-    Level14 = LevelNode(3,1,"Placeholder Name")
-    Level15 = LevelNode(3,2,"Placeholder")
-    Level16 = LevelNode(3,3,"Placeholder")
-    Level17 = LevelNode(3,4,"Placeholder Name")
-    Level18 = LevelNode(3,5,"Placeholder")
-    Level1.setAvailability(True)
-    #Each of the following lines will represent an inverted column of the level.
-    #We have a height of 17 blocks, and a width of 30 blocks.
-    Level1.setLevelMap([[1],[1],[1],[1],[1],[1],[1],
-                        [2,2.1,2.1,1.1],[2,2,2,1],[2,2.2,2.2,1.2],
-                        [1],[1],[1],[1],[1],[1],[1],[1],[1],[1],
-                        [2,2.1,2.1,1.1],[2,2,2,1],[2,2.2,2.2,1.2],
-                        [1],[1],[2,2.1,2.1,2.1,2.1,1.1],[2,2,2,2,2,1],[2,2,2,2,2,1],[2,2,2,2,2,1],[2,2,2,2,2,1]
-        
-        
-        ])
+    current_world = 1
     selected_level = None
 
-    #TEST
-    #testSprite = TerrainSprite(1,800,800)
-    #testBackground = TerrainSprite(0,0,0)
     while True:
-        if curWorld == 1:
-            screen.fill(BLACK) #Replace this with world 1 or 2 or 3 background depending on current world.
-        elif curWorld == 2:
-            screen.fill(GRAY)
-        elif curWorld == 3:
-            screen.fill(RED)
+        mouse_pos = pygame.mouse.get_pos()
 
-        #screen.blit(testSprite.image,testSprite.Coords)
-        #testSprite.Draw(screen)
+        # Draw background
+        screen.fill(DARK_BROWN)
 
-        mouse_pos = pygame.mouse.get_pos()  # Get the current mouse position
-
-        # Draw the Back button
+        # Draw UI elements
         draw_button(screen, back_button_rect, "Back", font, mouse_pos)
-        
-        # Draw the bottom Banner
-        pygame.draw.rect(screen,LIGHT_BROWN,banner_rect)
+        draw_button(screen, play_button_rect, "Play", font, mouse_pos)
+        draw_button(screen, left_button_rect, "Prev", font, mouse_pos)
+        draw_button(screen, right_button_rect, "Next", font, mouse_pos)
 
-        # Draw the world changing buttons
-        draw_button(screen,left_button_rect,"Prev\nWorld",font,mouse_pos)
-        draw_button(screen,right_button_rect,"Next\nWorld",font,mouse_pos)
-
-        # Draw the Play button
-        draw_button(screen,play_button_rect,"Play",font,mouse_pos)
-
-        #Drawing Level buttons for each world. If we're currently looking at world 1 levels, we will draw those buttons. Etc.
-        if curWorld == 1:
-            if Level1.availability == True:
-                draw_button(screen, Level_Button1, "1", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button1, "1", font, mouse_pos)
-            if Level2.availability == True:
-                draw_button(screen, Level_Button2, "2", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button2, "2", font, mouse_pos)
-            if Level3.availability == True:
-                draw_button(screen, Level_Button3, "3", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button3, "3", font, mouse_pos)
-            if Level4.availability == True:
-                draw_button(screen, Level_Button4, "4", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button4, "4", font, mouse_pos)
-            if Level5.availability == True:
-                draw_button(screen, Level_Button5, "5", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button5, "5", font, mouse_pos)
-            if Level6.availability == True:
-                draw_button(screen, Level_Button6, "6", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button6, "6", font, mouse_pos)
-
-        if curWorld == 2:
-            if Level7.availability == True:
-                draw_button(screen, Level_Button1, "7", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button1, "7", font, mouse_pos)
-            if Level8.availability == True:
-                draw_button(screen, Level_Button2, "8", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button2, "8", font, mouse_pos)
-            if Level9.availability == True:
-                draw_button(screen, Level_Button3, "9", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button3, "9", font, mouse_pos)
-            if Level10.availability == True:
-                draw_button(screen, Level_Button4, "10", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button4, "10", font, mouse_pos)
-            if Level11.availability == True:
-                draw_button(screen, Level_Button5, "11", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button5, "11", font, mouse_pos)
-            if Level12.availability == True:
-                draw_button(screen, Level_Button6, "12", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button6, "12", font, mouse_pos)
-
-        if curWorld == 3:
-            if Level13.availability == True:
-                draw_button(screen, Level_Button1, "13", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button1, "13", font, mouse_pos)
-            if Level14.availability == True:
-                draw_button(screen, Level_Button2, "14", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button2, "14", font, mouse_pos)
-            if Level15.availability == True:
-                draw_button(screen, Level_Button3, "15", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button3, "15", font, mouse_pos)
-            if Level16.availability == True:
-                draw_button(screen, Level_Button4, "16", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button4, "16", font, mouse_pos)
-            if Level17.availability == True:
-                draw_button(screen, Level_Button5, "17", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button5, "17", font, mouse_pos)
-            if Level18.availability == True:
-                draw_button(screen, Level_Button6, "18", font, mouse_pos)
-            else:
-                draw_button_locked(screen, Level_Button6, "18", font, mouse_pos)
-
+        # Draw levels for the current world
+        draw_world(screen, levels_by_world[current_world], mouse_pos, font, screen_width // 2, screen_height // 2)
 
         # Handle events
         for event in pygame.event.get():
@@ -218,104 +91,22 @@ def level_selector(screen):
                 pygame.quit()
                 sys.exit()
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT and selected_level.rightLevel.levelAvailability:
-                    selected_level = selected_level.rightLevel
-                elif event.key == pygame.K_LEFT and selected_level.leftLevel.levelAvailability:
-                    selected_level = selected_level.leftLevel
-                elif event.key == pygame.K_UP and selected_level.upLevel.levelAvailability:
-                    selected_level = selected_level.upLevel
-                elif event.key == pygame.K_DOWN and selected_level.downLevel.levelAvailability:
-                    selected_level = selected_level.downLevel
-                elif event.key == pygame.K_RETURN and selected_level.levelAvailability:
-                    selected_level.playLevel()
-                elif event.key == pygame.K_DELETE:
-                    pygame.quit()
-                    sys.exit()
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button_rect.collidepoint(mouse_pos):
-                    return  # Exit the level_selector function to go back to the main menu
+                    return  # Exit the level selector
+                if play_button_rect.collidepoint(mouse_pos) and selected_level:
+                    print(f"Starting {selected_level.levelName}")
+                    selected_level.StartLevel(screen)
+                if left_button_rect.collidepoint(mouse_pos):
+                    current_world = max(1, current_world - 1)
+                if right_button_rect.collidepoint(mouse_pos):
+                    current_world = min(3, current_world + 1)
 
-                if curWorld == 1:
-                    if Level_Button1.collidepoint(mouse_pos):
-                        #Change bottom banner to include level information.
-                        if Level1.availability == True:
-                            print("TEST Level Should Start")
-                            Level1.StartLevel(screen) #Initialize Level 1
-                    if Level_Button2.collidepoint(mouse_pos):
-                        if Level2.availability == True:
-                            #Initialize Level 2
-                            Level2.StartLevel
-                    if Level_Button3.collidepoint(mouse_pos):
-                        if Level3.availability == True:
-                            #Initialize Level 3
-                            Level3.StartLevel
-                    if Level_Button4.collidepoint(mouse_pos):
-                        if Level4.availability == True:
-                            #Initialize Level 4
-                            Level4.StartLevel
-                    if Level_Button5.collidepoint(mouse_pos):
-                        if Level5.availability == True:
-                            #Initialize Level 4
-                            Level5.StartLevel
-                    if Level_Button6.collidepoint(mouse_pos):
-                        if Level6.availability == True:
-                            #Initialize Level 3
-                            Level6.StartLevel
-                
-                if curWorld == 2:
-                    if Level_Button1.collidepoint(mouse_pos):
-                        if Level7.availability == True:
-                            Level7.StartLevel#Initialize Level 7
-                    if Level_Button2.collidepoint(mouse_pos):
-                        if Level8.availability == True:
-                            #Initialize Level 8
-                            Level8.StartLevel
-                    if Level_Button3.collidepoint(mouse_pos):
-                        if Level9.availability == True:
-                            #Initialize Level 9
-                            Level9.StartLevel
-                    if Level_Button4.collidepoint(mouse_pos):
-                        if Level10.availability == True:
-                            #Initialize Level 10
-                            Level10.StartLevel
-                    if Level_Button5.collidepoint(mouse_pos):
-                        if Level11.availability == True:
-                            #Initialize Level 11
-                            Level11.StartLevel
-                    if Level_Button6.collidepoint(mouse_pos):
-                        if Level12.availability == True:
-                            #Initialize Level 12
-                            Level12.StartLevel
+                # Check if any level button is clicked
+                for level in levels_by_world[current_world]:
+                    if hasattr(level, 'button_rect') and level.button_rect.collidepoint(mouse_pos) and level.availability:
+                        selected_level = level
+                        print(f"Selected {selected_level.levelName}")
 
-                if curWorld == 3:
-                    if Level_Button1.collidepoint(mouse_pos):
-                        if Level13.availability == True:
-                            Level13.StartLevel#Initialize Level 13
-                    if Level_Button2.collidepoint(mouse_pos):
-                        if Level14.availability == True:
-                            #Initialize Level 14
-                            Level14.StartLevel
-                    if Level_Button3.collidepoint(mouse_pos):
-                        if Level15.availability == True:
-                            #Initialize Level 15
-                            Level15.StartLevel
-                    if Level_Button4.collidepoint(mouse_pos):
-                        if Level16.availability == True:
-                            #Initialize Level 16
-                            Level16.StartLevel
-                    if Level_Button5.collidepoint(mouse_pos):
-                        if Level17.availability == True:
-                            #Initialize Level 17
-                            Level17.StartLevel
-                    if Level_Button6.collidepoint(mouse_pos):
-                        if Level18.availability == True:
-                            #Initialize Level 18
-                            Level18.StartLevel
-                    
-
-
-
-
-        pygame.display.update()
+        # Update display
+        pygame.display.flip()

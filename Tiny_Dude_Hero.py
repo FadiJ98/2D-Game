@@ -269,31 +269,36 @@ class Hero(Player):
         for rock in self.rocks:
             rock.draw(screen)
 
+# Main function to initialize and run the game
+def main():
+    hero = Hero(100, SCREEN_HEIGHT - 150)
+    running = True
+    clock = pygame.time.Clock()
 
-'''hero = Hero(100, SCREEN_HEIGHT - 150)
-running = True
-clock = pygame.time.Clock()
+    while running:
+        delta_time = clock.tick(60) / 1000
 
-while running:
-    delta_time = clock.tick(60) / 1000
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Change throw trigger to "Enter" key
+                    if not hero.throwing:
+                        hero.throwing = True
+                        hero.throw_frame = 0
+                        hero.rock_spawned = False  # Reset rock release flag for new throw
 
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RETURN:  # Change throw trigger to "Enter" key
-                if not hero.throwing:
-                    hero.throwing = True
-                    hero.throw_frame = 0
-                    hero.rock_spawned = False  # Reset rock release flag for new throw
+                if event.key == pygame.K_e:
+                    hero.use_ability()
 
-            if event.key == pygame.K_e:
-                hero.use_ability()
+        hero.update(delta_time)
+        screen.fill((0, 0, 0))
+        hero.draw(screen)
+        pygame.display.flip()
 
-    hero.update(delta_time)
-    screen.fill((0, 0, 0))
-    hero.draw(screen)
-    pygame.display.flip()
+    pygame.quit()
 
-pygame.quit()'''
+# Main guard to prevent running when imported
+if __name__ == "__main__":
+    main()

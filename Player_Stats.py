@@ -1,8 +1,3 @@
-import pygame
-import time
-import sys
-import os
-
 pygame.init()
 
 # character stats and abilities
