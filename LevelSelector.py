@@ -105,10 +105,10 @@ def level_selector(screen):
 
     #TEST
     #testSprite = TerrainSprite(1,800,800)
-    #testBackground = TerrainSprite(0,0,0)
+    Background = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1","TileSet3SC.png"))
     while True:
         if curWorld == 1:
-            screen.fill(BLACK) #Replace this with world 1 or 2 or 3 background depending on current world.
+            screen.blit(Background,(0,0)) #Replace this with world 1 or 2 or 3 background depending on current world.
         elif curWorld == 2:
             screen.fill(GRAY)
         elif curWorld == 3:

@@ -10,12 +10,13 @@ pygame.init()
 #This implementation should be changed depending on settings.
 running = True
 
-Background = pygame.image.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1","TileSet3SC.png"))
-#Background.load(os.path.join(r"C:\Users\sacor\source\repos\FadiJ98\2D-Game\2D Game Images\Level_Tiles_Sets\Level_1","Tile Set 3.png"))
+Background = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1","TileSet3SC.png"))
+clock = pygame.time.Clock()
 #Main Function
 def GameLoop(Map,screen): 
     #Main Loop
     while running:
+        delta_time = clock.tick(60) / 1000
         screen.blit(Background,(0,0)) #Fill the screen with background image.
 
         #Properly draw the Map using a 2d array of TerrainSprites given by LevelNode upon running LevelNode.StartLevel
