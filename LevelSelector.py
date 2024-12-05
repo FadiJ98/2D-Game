@@ -14,6 +14,9 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 HIGHLIGHT_COLOR = (240, 128, 128)
 
+# Global running variable
+running = True
+
 # Helper functions
 def draw_button(surface, rect, text, font, mouse_pos, locked=False):
     """Draw a button with hover and locked states."""
@@ -48,7 +51,7 @@ def draw_world(screen, levels, mouse_pos, font, center_x, center_y):
 
 # Main Level Selector function
 def level_selector(screen):
-    """Level Selector screen logic."""
+    global running  # Use the global `running` variable to control the program state
     font = pygame.font.SysFont(None, 36)  # Adjusted font size
 
     # Define UI elements
@@ -57,7 +60,7 @@ def level_selector(screen):
     back_button_rect = pygame.Rect(20, 20, button_width, button_height)
     play_button_rect = pygame.Rect(screen_width // 2 - button_width, screen_height - 150, button_width * 2, button_height)
     left_button_rect = pygame.Rect(20, screen_height - 150, button_width * 2, button_height)
-    right_button_rect = pygame.Rect(screen_width - 350, screen_height - 150, button_width * 2, button_height)  # Adjusted to move left by 20px
+    right_button_rect = pygame.Rect(screen_width - 350, screen_height - 150, button_width * 2, button_height)
 
     # Initialize levels
     levels_by_world = {
@@ -70,7 +73,7 @@ def level_selector(screen):
     current_world = 1
     selected_level = None
 
-    while True:
+    while running:  # Use the global `running` variable
         mouse_pos = pygame.mouse.get_pos()
 
         # Draw background
@@ -88,6 +91,7 @@ def level_selector(screen):
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                running = False  # Stop the main loop
                 pygame.quit()
                 sys.exit()
 
