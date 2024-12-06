@@ -2,6 +2,7 @@ import pygame
 import sys
 from LevelNode import LevelNode
 
+
 # Initialize Pygame
 pygame.init()
 
@@ -18,9 +19,15 @@ HIGHLIGHT_COLOR = (240, 128, 128)
 running = True
 
 # Helper functions
-def draw_button(surface, rect, text, font, mouse_pos, locked=False):
-    """Draw a button with hover and locked states."""
-    color = GRAY if locked else (HIGHLIGHT_COLOR if rect.collidepoint(mouse_pos) else LIGHT_BROWN)
+def draw_button(surface, rect, text, font, mouse_pos, locked=False, is_selected=False):
+    """Draw a button with hover, locked, and selected states."""
+    if is_selected:
+        color = (144, 238, 144)  # Light Green for selected level
+    elif locked:
+        color = GRAY
+    else:
+        color = HIGHLIGHT_COLOR if rect.collidepoint(mouse_pos) else LIGHT_BROWN
+
     pygame.draw.rect(surface, color, rect, border_radius=20)
 
     text_color = BLACK if not locked else WHITE
@@ -28,7 +35,7 @@ def draw_button(surface, rect, text, font, mouse_pos, locked=False):
     surface.blit(text_surf, (rect.x + (rect.width - text_surf.get_width()) // 2,
                              rect.y + (rect.height - text_surf.get_height()) // 2))
 
-def draw_world(screen, levels, mouse_pos, font, center_x, center_y):
+def draw_world(screen, levels, mouse_pos, font, center_x, center_y, selected_level):
     """Draw level buttons, centered horizontally and vertically."""
     button_width, button_height = 150, 75  # Adjusted button size
     padding_x, padding_y = 30, 30
@@ -47,7 +54,9 @@ def draw_world(screen, levels, mouse_pos, font, center_x, center_y):
             button_width, button_height
         )
         level.button_rect = button_rect
-        draw_button(screen, button_rect, level.levelName, font, mouse_pos, locked=not level.availability)
+        is_selected = (level == selected_level)  # Check if this level is selected
+        draw_button(screen, button_rect, level.levelName, font, mouse_pos, locked=not level.availability, is_selected=is_selected)
+
 
 # Main Level Selector function
 def level_selector(screen):
@@ -90,7 +99,9 @@ def level_selector(screen):
         draw_button(screen, right_button_rect, "Next", font, mouse_pos)
 
         # Draw levels for the current world
-        draw_world(screen, levels_by_world[current_world], mouse_pos, font, screen_width // 2, screen_height // 2)
+        # Draw levels for the current world
+        draw_world(screen, levels_by_world[current_world], mouse_pos, font, screen_width // 2, screen_height // 2,
+                   selected_level)
 
         # Handle events
         for event in pygame.event.get():
@@ -112,7 +123,8 @@ def level_selector(screen):
 
                 # Check if any level button is clicked
                 for level in levels_by_world[current_world]:
-                    if hasattr(level, 'button_rect') and level.button_rect.collidepoint(mouse_pos) and level.availability:
+                    if hasattr(level, 'button_rect') and level.button_rect.collidepoint(
+                            mouse_pos) and level.availability:
                         selected_level = level
                         print(f"Selected {selected_level.levelName}")
 

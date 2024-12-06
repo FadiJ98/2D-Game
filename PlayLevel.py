@@ -1,5 +1,3 @@
-from traceback import print_tb
-from types import NoneType
 
 import pygame
 import sys
@@ -30,10 +28,8 @@ def GameLoop(Map, screen):
 
     # Create a list of enemies with different positions
     enemies = [
-        Enemy(500, 800),
-        Enemy(600, 800),
-        Enemy(700, 800),
-    ]
+        Enemy(500, 800, left_bound=200, right_bound=900)
+        ]
 
     clock = pygame.time.Clock()
 
@@ -91,29 +87,6 @@ def GameLoop(Map, screen):
                         else:
                             hero.y = rect.bottom
                             hero.velocity_y = 0
-
-                # Handle enemy collision
-                for enemy in enemies:
-                    if enemy.rect.colliderect(rect):
-                        overlap_x = min(enemy.rect.right - rect.left, rect.right - enemy.rect.left)
-                        overlap_y = min(enemy.rect.bottom - rect.top, rect.bottom - enemy.rect.top)
-
-                        if overlap_x < overlap_y:
-                            # Horizontal collision
-                            if enemy.rect.centerx < rect.centerx:
-                                enemy.x = rect.left - enemy.rect.width
-                                enemy.direction = "left"  # Reverse direction
-                            else:
-                                enemy.x = rect.right
-                                enemy.direction = "right"  # Reverse direction
-                        else:
-                            # Vertical collision
-                            if enemy.rect.centery < rect.centery:
-                                enemy.y = rect.top - enemy.rect.height
-                                enemy.velocity_y = 0
-                            else:
-                                enemy.y = rect.bottom
-                                enemy.velocity_y = 0
 
         # Clear the screen with the background image
         screen.blit(Background, (0, 0))
