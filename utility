@@ -4,6 +4,7 @@ BASE_IMG_PATH = "2S Game Images/Monsters/Skeleton"
 
 def load_image(path):
     img = pygame.image.load(BASE_IMG_PATH + path).convert()
+    img = pygame.transform.scale2x(img)
     img.set_colorkey((0,0,0))
     return img
 
