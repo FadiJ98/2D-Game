@@ -9,6 +9,7 @@ running = True
 # Load background
 Background = pygame.image.load('2D Game Images/Level_Tiles_Sets/Level_1/TileSet3SC.png')
 
+
 # Define a spawn point for the hero
 SPAWN_POINT = (800, 900)  # Example spawn point coordinates (x=100, y=500)
 
@@ -18,8 +19,8 @@ terrainDict = {}
 
 # Main Function
 def GameLoop(Map, screen):
-    global running  # Declare the global variable at the start of the function
-    hero = Hero(*SPAWN_POINT)  # Use the spawn point to initialize the hero's starting position
+    global running
+    hero = Hero(*SPAWN_POINT)
     clock = pygame.time.Clock()
 
     #Homeless Element That Should Be somewhere else but isn't because I'm a big dum so it's here for ease of access. From Sam.
@@ -29,7 +30,7 @@ def GameLoop(Map, screen):
 
     print(terrainDict)
     while running:
-        delta_time = clock.tick(60) / 1000  # Cap frame rate to 60 FPS
+        delta_time = clock.tick(60) / 1000
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -38,11 +39,11 @@ def GameLoop(Map, screen):
                 sys.exit()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:  # Enter key for throwing
+                if event.key == pygame.K_RETURN:
                     if not hero.throwing:
                         hero.throwing = True
                         hero.throw_frame = 0
-                        hero.rock_spawned = False  # Reset for new throw
+                        hero.rock_spawned = False
 
                 if event.key == pygame.K_e:
                     hero.use_ability()
