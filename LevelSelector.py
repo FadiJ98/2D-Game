@@ -1,7 +1,7 @@
 import pygame
 import sys
 from LevelNode import LevelNode
-
+from Option import sfx_volume  # Import sfx_volume from the options menu
 
 # Initialize Pygame
 pygame.init()
@@ -17,6 +17,9 @@ HIGHLIGHT_COLOR = (240, 128, 128)
 
 # Global running variable
 running = True
+
+# Load button sound effect
+button_sound = pygame.mixer.Sound('OST/buttons.mp3')
 
 # Helper functions
 def draw_button(surface, rect, text, font, mouse_pos, locked=False, is_selected=False):
@@ -100,7 +103,6 @@ def level_selector(screen):
         draw_button(screen, right_button_rect, "Next", font, mouse_pos)
 
         # Draw levels for the current world
-        # Draw levels for the current world
         draw_world(screen, levels_by_world[current_world], mouse_pos, font, screen_width // 2, screen_height // 2,
                    selected_level)
 
@@ -112,20 +114,26 @@ def level_selector(screen):
                 sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+                button_sound.set_volume(sfx_volume)  # Sync button sound volume with sfx_volume
+
                 if back_button_rect.collidepoint(mouse_pos):
+                    button_sound.play()  # Play button sound
                     return  # Exit the level selector
                 if play_button_rect.collidepoint(mouse_pos) and selected_level:
+                    button_sound.play()  # Play button sound
                     print(f"Starting {selected_level.levelName}")
                     selected_level.StartLevel(screen)
                 if left_button_rect.collidepoint(mouse_pos):
+                    button_sound.play()  # Play button sound
                     current_world = max(1, current_world - 1)
                 if right_button_rect.collidepoint(mouse_pos):
+                    button_sound.play()  # Play button sound
                     current_world = min(3, current_world + 1)
 
                 # Check if any level button is clicked
                 for level in levels_by_world[current_world]:
-                    if hasattr(level, 'button_rect') and level.button_rect.collidepoint(
-                            mouse_pos) and level.availability:
+                    if hasattr(level, 'button_rect') and level.button_rect.collidepoint(mouse_pos) and level.availability:
+                        button_sound.play()  # Play button sound
                         selected_level = level
                         print(f"Selected {selected_level.levelName}")
 

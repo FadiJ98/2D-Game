@@ -1,10 +1,8 @@
-
 import pygame
 import sys
 from Tiny_Dude_Hero import Hero
 from enemy import Enemy
-
-
+from PauseMenu import pause_menu
 
 pygame.init()
 
@@ -13,12 +11,14 @@ running = True
 # Load background
 Background = pygame.image.load('2D Game Images/Level_Tiles_Sets/Level_1/TileSet3SC.png')
 
-
 # Define a spawn point for the hero
 SPAWN_POINT = (800, 900)  # Example spawn point coordinates (x=100, y=500)
 
 terrainDict = {}
 
+# Load background music
+pygame.mixer.init()
+GAME_MUSIC = 'OST/World_1.mp3'  # Replace with the path to your music file
 
 
 # Main Function
@@ -29,9 +29,13 @@ def GameLoop(Map, screen):
     # Create a list of enemies with different positions
     enemies = [
         Enemy(500, 800, left_bound=200, right_bound=900)
-        ]
+    ]
 
     clock = pygame.time.Clock()
+
+    # Start the background music
+    pygame.mixer.music.load(GAME_MUSIC)
+    pygame.mixer.music.play(-1)  # Play indefinitely
 
     # Initialize the terrainDict for collision detection
     for i in range(len(Map)):
@@ -56,6 +60,16 @@ def GameLoop(Map, screen):
 
                 if event.key == pygame.K_e:
                     hero.use_ability()
+
+                if event.key == pygame.K_ESCAPE:
+                    # Pause music and call the pause menu
+                    pygame.mixer.music.pause()
+                    result = pause_menu(screen)
+                    if result == "main_menu":  # If returning to the main menu
+                        pygame.mixer.music.stop()
+                        return "main_menu"
+                    # Resume music after exiting the pause menu
+                    pygame.mixer.music.unpause()
 
         # Handle collisions between rocks and enemies
         for rock in hero.rocks:
@@ -108,4 +122,5 @@ def GameLoop(Map, screen):
         # Update the display
         pygame.display.update()
 
-
+    # Stop the music when exiting the game loop
+    pygame.mixer.music.stop()

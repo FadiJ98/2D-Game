@@ -12,7 +12,7 @@ MAIN_MENU_COLOR = (0, 206, 209)  # Teal
 PAUSE_BACKGROUND_COLOR = (0, 0, 0, 180)  # Semi-transparent black
 
 # Set up fonts
-font = pygame.font.Font(None, 80)
+font = pygame.font.Font(None, 50)
 
 def draw_rounded_rect(surface, color, rect, corner_radius):
     pygame.draw.rect(surface, color, rect, border_radius=corner_radius)
@@ -21,10 +21,14 @@ def get_centered_rect(button_width, button_height, screen_width, screen_height, 
     return pygame.Rect((screen_width // 2 - button_width // 2), (screen_height // 2 - button_height // 2 + offset_y), button_width, button_height)
 
 # Pause menu function
+# Set up fonts with a smaller size
+font = pygame.font.Font(None, 50)  # Reduced font size for better fit
+
+
 def pause_menu(screen):
     paused = True
     clock = pygame.time.Clock()
-    
+
     while paused:
         screen_width, screen_height = screen.get_size()  # Dynamically get the window size
         mouse_pos = pygame.mouse.get_pos()
@@ -81,12 +85,16 @@ def pause_menu(screen):
         settings_text = font.render('Settings', True, BLACK)
         main_menu_text = font.render('Main Menu', True, BLACK)
 
-        # Draw text on top of buttons
-        screen.blit(resume_text, (resume_button_rect.x + 70, resume_button_rect.y + 10))
-        screen.blit(settings_text, (settings_button_rect.x + 50, settings_button_rect.y + 10))
-        screen.blit(main_menu_text, (main_menu_button_rect.x + 20, main_menu_button_rect.y + 10))
+        # Calculate text positions to center it on the buttons
+        screen.blit(resume_text, (resume_button_rect.x + (button_width - resume_text.get_width()) // 2,
+                                  resume_button_rect.y + (button_height - resume_text.get_height()) // 2))
+        screen.blit(settings_text, (settings_button_rect.x + (button_width - settings_text.get_width()) // 2,
+                                    settings_button_rect.y + (button_height - settings_text.get_height()) // 2))
+        screen.blit(main_menu_text, (main_menu_button_rect.x + (button_width - main_menu_text.get_width()) // 2,
+                                     main_menu_button_rect.y + (button_height - main_menu_text.get_height()) // 2))
 
         # Update the display
         pygame.display.flip()
         clock.tick(30)  # Limit the pause menu frame rate
+
 
