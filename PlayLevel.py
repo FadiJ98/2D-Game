@@ -48,17 +48,24 @@ def GameLoop(Map, screen):
                     hero.use_ability()
 
         #Checking if player is currently colliding with anything.
+        # Checking if player is currently colliding with anything.
         colRect = hero.rect.collidedict(terrainDict, True)
-        if colRect != None:
+        print(colRect)
+        if colRect:
             print("There Should Be A Collision")
-            if hero.rect.x <= colRect.x:
-                hero.x = colRect.x - 48
-            if hero.rect.x >= colRect.x + 64:
-                hero.x = colRect.x + 64
-            if hero.rect.y >= colRect.y:
-                hero.y = colRect.y + 96
-                hero.velocity_y = 0
-                #Then the hero is over the colliding object.
+            colRect = colRect[0]  # Get the collision rectangle
+            if hero.rect.left < colRect.right and hero.rect.right > colRect.left:
+                if hero.rect.top < colRect.bottom and hero.rect.bottom > colRect.top:
+                    if hero.rect.left < colRect.left:
+                        hero.x = colRect.left - hero.rect.width
+                    elif hero.rect.right > colRect.right:
+                        hero.x = colRect.right
+                    if hero.rect.top < colRect.top:
+                        hero.y = colRect.top - hero.rect.height
+                        hero.velocity_y = 0
+                    elif hero.rect.bottom > colRect.bottom:
+                        hero.y = colRect.bottom
+                        hero.velocity_y = 0
 
 
         # Clear the screen with the background image
