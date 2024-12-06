@@ -12,12 +12,22 @@ Background = pygame.image.load('2D Game Images/Level_Tiles_Sets/Level_1/TileSet3
 # Define a spawn point for the hero
 SPAWN_POINT = (800, 900)  # Example spawn point coordinates (x=100, y=500)
 
+terrainDict = {}
+
+
+
 # Main Function
 def GameLoop(Map, screen):
     global running  # Declare the global variable at the start of the function
     hero = Hero(*SPAWN_POINT)  # Use the spawn point to initialize the hero's starting position
     clock = pygame.time.Clock()
 
+    #Homeless Element That Should Be somewhere else but isn't because I'm a big dum so it's here for ease of access. From Sam.
+    for i in range(len(Map)):
+        for j in range(len(Map[i])):
+            terrainDict[f"{i},{j}"] = Map[i][j].rect
+
+    print(terrainDict)
     while running:
         delta_time = clock.tick(60) / 1000  # Cap frame rate to 60 FPS
 
@@ -36,6 +46,9 @@ def GameLoop(Map, screen):
 
                 if event.key == pygame.K_e:
                     hero.use_ability()
+
+        hero.rect.collidedict()
+
 
         # Clear the screen with the background image
         screen.blit(Background, (0, 0))

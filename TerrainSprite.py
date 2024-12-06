@@ -25,6 +25,7 @@ class TerrainSprite(pygame.sprite.Sprite):
             case 0:
                 #This will literally be air. So we don't need to worry about it.
                 self.image = None
+                self.rect = None
                 pass
             case 1:
                 #For Grass Block Center
