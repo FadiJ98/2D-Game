@@ -42,9 +42,9 @@ def GameLoop(Map, screen):
         screen.blit(Background, (0, 0))
 
         # Draw the map
+        
         for i in range(len(Map)):
             for j in range(len(Map[i])):
-                print(Map[i][j].type)
                 Map[i][j].Draw(screen)
 
         # Update and draw the hero

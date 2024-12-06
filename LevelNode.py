@@ -67,6 +67,7 @@ class LevelNode:
         """
         Constructs the level's terrain based on initMap.
         """
+
         if not self.availability:
             print(f"Level '{self.levelName}' is not available for creation.")
             return
@@ -77,5 +78,4 @@ class LevelNode:
             for j, cell in enumerate(row):
                 # Create a TerrainSprite for each cell in the map.
                 self.terrainMap[i][j] = TerrainSprite(cell, j * 64, i * 64)
-
         print(f"Terrain created for level: {self.levelName}")
