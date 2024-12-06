@@ -11,7 +11,7 @@ Background = pygame.image.load('2D Game Images/Level_Tiles_Sets/Level_1/TileSet3
 
 
 # Define a spawn point for the hero
-SPAWN_POINT = (800, 1000)  # Example spawn point coordinates (x=100, y=500)
+SPAWN_POINT = (800, 900)  # Example spawn point coordinates (x=100, y=500)
 
 # Main Function
 def GameLoop(Map, screen):
