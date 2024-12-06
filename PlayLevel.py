@@ -28,7 +28,6 @@ def GameLoop(Map, screen):
         for j in range(len(Map[i])):
             terrainDict[f"{i},{j}"] = Map[i][j].rect
 
-    print(terrainDict)
     while running:
         delta_time = clock.tick(60) / 1000
 
@@ -48,7 +47,18 @@ def GameLoop(Map, screen):
                 if event.key == pygame.K_e:
                     hero.use_ability()
 
-        hero.rect.collidedict()
+        #Checking if player is currently colliding with anything.
+        colRect = hero.rect.collidedict(terrainDict, True)
+        if colRect != None:
+            print("There Should Be A Collision")
+            if hero.rect.x <= colRect.x:
+                hero.x = colRect.x - 48
+            if hero.rect.x >= colRect.x + 64:
+                hero.x = colRect.x + 64
+            if hero.rect.y >= colRect.y:
+                hero.y = colRect.y + 96
+                hero.velocity_y = 0
+                #Then the hero is over the colliding object.
 
 
         # Clear the screen with the background image
