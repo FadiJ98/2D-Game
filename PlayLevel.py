@@ -1,3 +1,5 @@
+from traceback import print_tb
+
 import pygame
 import sys
 from Tiny_Dude_Hero import Hero
@@ -49,30 +51,41 @@ def GameLoop(Map, screen):
 
         #Checking if player is currently colliding with anything.
         # Checking if player is currently colliding with anything.
-        colRect = hero.rect.collidedict(terrainDict, True)
-        print(colRect)
-        if colRect:
-            print("There Should Be A Collision")
-            colRect = colRect[0]  # Get the collision rectangle
-            if hero.rect.left < colRect.right and hero.rect.right > colRect.left:
-                if hero.rect.top < colRect.bottom and hero.rect.bottom > colRect.top:
-                    if hero.rect.left < colRect.left:
-                        hero.x = colRect.left - hero.rect.width
-                    elif hero.rect.right > colRect.right:
-                        hero.x = colRect.right
-                    if hero.rect.top < colRect.top:
-                        hero.y = colRect.top - hero.rect.height
-                        hero.velocity_y = 0
-                    elif hero.rect.bottom > colRect.bottom:
-                        hero.y = colRect.bottom
-                        hero.velocity_y = 0
+        #colRect = hero.rect.collidedict(terrainDict, True)
+
+        for cord, rect in terrainDict.items():
+            if isinstance(rect, pygame.Rect):
+                if hero.rect.colliderect(rect):  # Check collision
+                    # Determine the direction of collision
+                    overlap_x = min(hero.rect.right - rect.left, rect.right - hero.rect.left)
+                    overlap_y = min(hero.rect.bottom - rect.top, rect.bottom - hero.rect.top)
+
+                    if overlap_x < overlap_y:
+                        # Horizontal collision
+                        if hero.rect.centerx < rect.centerx:
+                            # Hero is to the left of the object
+                            hero.x = rect.left - hero.rect.width
+                        else:
+                            # Hero is to the right of the object
+                            hero.x = rect.right
+                    else:
+                        # Vertical collision
+                        if hero.rect.centery < rect.centery:
+                            # Hero is above the object
+                            hero.y = rect.top - hero.rect.height
+                            hero.velocity_y = 0  # Stop downward motion
+                            hero.on_ground = True
+                        else:
+                            # Hero is below the object (unlikely unless jumping through platforms)
+                            hero.y = rect.bottom
+                            hero.velocity_y = 0  # Stop upward motion
 
 
         # Clear the screen with the background image
         screen.blit(Background, (0, 0))
 
         # Draw the map
-        
+
         for i in range(len(Map)):
             for j in range(len(Map[i])):
                 Map[i][j].Draw(screen)
