@@ -1,6 +1,13 @@
 import pygame
 
+
 pygame.init()
+
+DEBUG_MODE = False # Set this to True to enable rectangle debugging
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
 # Constants for screen size and hero scale
 SCREEN_WIDTH = 1920
@@ -57,22 +64,6 @@ def load_frames(spritesheet, num_frames):
 
 # Initialize animations dictionary by loading frames for each action
 animations = {action: load_frames(spritesheet, frame_counts[action]) for action, spritesheet in spritesheets.items()}
-
-# Rock class for handling rock throws
-class Rock:
-    def __init__(self, x, y, direction):
-        self.x = x
-        self.y = y
-        self.direction = direction
-        # Adjust the rock size to make it smaller
-        self.image = pygame.transform.scale(rock_image, (12 * SCALE_FACTOR, 12 * SCALE_FACTOR))
-        self.speed = 10
-
-    def update(self):
-        self.x += self.speed if self.direction == "right" else -self.speed
-
-    def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
 
 # Player class with stats and abilities
 MAX_HEALTH = 3
@@ -215,6 +206,8 @@ def load_frames(spritesheet, num_frames):
 animations = {action: load_frames(spritesheet, frame_counts[action]) for action, spritesheet in spritesheets.items()}
 
 # Rock class for handling rock throws
+# Global debug flag
+
 class Rock:
     def __init__(self, x, y, direction):
         self.x = x
@@ -223,12 +216,22 @@ class Rock:
         # Adjust the rock size to make it smaller
         self.image = pygame.transform.scale(rock_image, (12 * SCALE_FACTOR, 12 * SCALE_FACTOR))
         self.speed = 10
+        self.rect = self.image.get_rect(topleft=(x, y))  # Initialize rect for collision detection
 
     def update(self):
         self.x += self.speed if self.direction == "right" else -self.speed
+        self.rect.x = self.x  # Update rect position to match movement
 
     def draw(self, screen):
-        screen.blit(self.image, (self.x, self.y))
+        if DEBUG_MODE:
+            # Draw the rectangle in debug mode
+            pygame.draw.rect(screen, RED, self.rect, 2)  # Draw a red rectangle for debugging
+        else:
+            # Draw the rock image
+            screen.blit(self.image, (self.x, self.y))
+
+
+
 
 # Player class with stats and abilities
 MAX_HEALTH = 3
@@ -424,40 +427,6 @@ class Hero(Player):
         # Draw all thrown rocks
         for rock in self.rocks:
             rock.draw(screen)
-
-# Main function to initialize and run the game
-def main():
-    hero = Hero(100, SCREEN_HEIGHT - 150)
-    running = True
-    clock = pygame.time.Clock()
-
-    while running:
-        delta_time = clock.tick(60) / 1000
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:  # Change throw trigger to "Enter" key
-                    if not hero.throwing:
-                        hero.throwing = True
-                        hero.throw_frame = 0
-                        hero.rock_spawned = False  # Reset rock release flag for new throw
-
-                if event.key == pygame.K_e:
-                    hero.use_ability()
-
-        hero.update(delta_time)
-        screen.fill((0, 0, 0))
-        hero.draw(screen)
-        pygame.display.flip()
-
-    pygame.quit()
-
-# Main guard to prevent running when imported
-if __name__ == "__main__":
-    main()
 
 # Main function to initialize and run the game
 def main():

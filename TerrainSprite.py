@@ -1,78 +1,88 @@
 import pygame
-import sys
 import os
 
-#Initialize some basic colors for testing purposes.
-WHITE = (255,255,255)
-BLACK = (0,0,0)
-RED = (255,0,0)
+# Initialize some basic colors for testing purposes
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
 
-#Terrain implementation using sprites.
+# Global debug flag
+DEBUG_MODE = False  # Set to True to draw rectangles instead of images
+
+# Terrain implementation using sprites
 class TerrainSprite(pygame.sprite.Sprite):
-
-    def __init__(self,type,x,y):
-        self.type = type #Determines the image and rect of this sprite.
-        self.isActive = False #Determines the state of the sprite, for instance, an active door sprite is open, while an inactive door sprite is closed.awd
-        #self.Color = (0,0,0) #Contains the color of the block for testing purposes.
-        self.Coords = (x,(1016-y)) #y starts at 1016 = bottom left corner - 64, because images are generated down and right.
+    def __init__(self, type, x, y):
+        self.rect = None
+        self.type = type  # Determines the image and rect of this sprite
+        self.isActive = False  # Determines the state of the sprite
+        self.Coords = (x, (1016 - y))  # Adjust y-coordinate to fit bottom-left origin
         width = 64
         height = 64
 
-        #Initialize Sprite Constructor.
+        # Initialize Sprite Constructor
         pygame.sprite.Sprite.__init__(self)
 
         match self.type:
             case 0:
-                #This will literally be air. So we don't need to worry about it.
+                # Air: no image, no collision
                 self.image = None
-                self.rect = (0,0,0,0)
-                pass
+                self.rect = pygame.Rect(0, 0, 0, 0)
             case 1:
-                #For Grass Block Center
-                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile1.png"))
-                self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
-                self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
-                self.rect.y = y #Same as above but for Y position.
+                # Grass Block Center
+                self.image = pygame.image.load(os.path.join(
+                    r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles", "Tile1.png"))
+                self.rect = self.image.get_rect()
+                self.rect.x = self.Coords[0]
+                self.rect.y = self.Coords[1]
             case 1.1:
-                #For Grass Block left
-                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile3.png"))
-                self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
-                self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
-                self.rect.y = y #Same as above but for Y position.
+                # Grass Block Left
+                self.image = pygame.image.load(os.path.join(
+                    r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles", "Tile3.png"))
+                self.rect = self.image.get_rect()
+                self.rect.x = self.Coords[0]
+                self.rect.y = self.Coords[1]
             case 1.2:
-                #For Grass Block right
-                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile4.png"))
-                self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
-                self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
-                self.rect.y = y #Same as above but for Y position.
-            case 2: 
-                #For Dirt Block Center
-                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile2.png"))
-                self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
-                self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
-                self.rect.y = y #Same as above but for Y position.
-            case 2.1: 
-                #For Dirt Block Left
-                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile5.png"))
-                self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
-                self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
-                self.rect.y = y #Same as above but for Y position.
-            case 2.2: 
-                #For Dirt Block Right
-                self.image = pygame.image.load(os.path.join(r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles","Tile6.png"))
-                self.rect = self.image.get_rect() #Defines the Sprites Rect based on the image size (in this case the surface size)
-                self.rect.x = x #Set's the Sprite's Rect X position Which should also change where the surface and sprite are.
-                self.rect.y = y #Same as above but for Y position.
+                # Grass Block Right
+                self.image = pygame.image.load(os.path.join(
+                    r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles", "Tile4.png"))
+                self.rect = self.image.get_rect()
+                self.rect.x = self.Coords[0]
+                self.rect.y = self.Coords[1]
+            case 2:
+                # Dirt Block Center
+                self.image = pygame.image.load(os.path.join(
+                    r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles", "Tile2.png"))
+                self.rect = self.image.get_rect()
+                self.rect.x = self.Coords[0]
+                self.rect.y = self.Coords[1]
+            case 2.1:
+                # Dirt Block Left
+                self.image = pygame.image.load(os.path.join(
+                    r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles", "Tile5.png"))
+                self.rect = self.image.get_rect()
+                self.rect.x = self.Coords[0]
+                self.rect.y = self.Coords[1]
+            case 2.2:
+                # Dirt Block Right
+                self.image = pygame.image.load(os.path.join(
+                    r"2D Game Images\Level_Tiles_Sets\Level_1\Individual Tiles", "Tile6.png"))
+                self.rect = self.image.get_rect()
+                self.rect.x = self.Coords[0]
+                self.rect.y = self.Coords[1]
             case 3:
-                pass #Write some code for a platform which can be passed through from the bottom but not fall through from the top.
-            case 98: 
-                pass
+                pass  # Placeholder for platforms or other blocks
+            case 98:
+                pass  # Placeholder for special blocks
             case 99:
-                if self.isActive == True:
-                    pass #Write some code for the end goal
-    def Draw(self,screen):
-        #A quick method which draws the given sprite onto the screen.
-        if self.image == None:
-            return
+                if self.isActive:
+                    pass  # Placeholder for end goal logic
+
+    def Draw(self, screen):
+        """Draws the sprite image onto the screen if DEBUG_MODE is False."""
+        if DEBUG_MODE:
+            # Draw rectangle for debugging
+            pygame.draw.rect(screen, RED, self.rect, 2)  # Outline the rect in red
         else:
-            screen.blit(self.image,self.Coords)
+            if self.image:
+                # Draw the sprite's image
+                screen.blit(self.image, self.Coords)

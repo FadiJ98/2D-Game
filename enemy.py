@@ -1,19 +1,18 @@
 import pygame
-pygame.init()
 
-# Constants for screen size and enemy scale
+# Global debug flag
+DEBUG_MODE = False  # Set this to True to enable rectangle debugging
+
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+
+# Screen constants
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
-SCALE_FACTOR = 3  # Adjust scale for proper display
+SCALE_FACTOR = 1
 
-# Initialize the screen
-fullscreen = False  # Set to True for fullscreen mode
-if fullscreen:
-    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()  # Get actual screen size in fullscreen
-else:
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Enemy Animation Test")
+# Initialize Pygame
+pygame.init()
 
 # Load spritesheets for enemy states
 spritesheets = {
@@ -31,8 +30,8 @@ frame_counts = {
     "death": 4
 }
 
-# Function to load frames from a spritesheet
 def load_frames(spritesheet, num_frames):
+    """Loads frames from a spritesheet."""
     frame_width = spritesheet.get_width() // num_frames
     frame_height = spritesheet.get_height()
     frames = []
@@ -42,95 +41,94 @@ def load_frames(spritesheet, num_frames):
         frames.append(frame)
     return frames
 
-# Initialize animations dictionary by loading frames for each action
+# Initialize animations
 animations = {state: load_frames(spritesheets[state], frame_counts[state]) for state in spritesheets}
 
-# Enemy class with multiple animations
 class Enemy:
-    def __init__(self, x, y):
+    def __init__(self, x, y, left_bound=None, right_bound=None, screen_size=(SCREEN_WIDTH, SCREEN_HEIGHT)):
         self.x = x
         self.y = y
-        self.state = "idle"  # Current state: idle, walk, attack, or death
-        self.direction = "right"  # Direction the enemy is facing
-        self.current_frame = 0  # Current animation frame
+        self.state = "idle"  # Start in idle state
+        self.direction = "right"  # Initial direction
+        self.current_frame = 0
         self.width = animations["idle"][0].get_width()
         self.height = animations["idle"][0].get_height()
-        self.mov_speed = 5  # Movement speed
-        self.alive = True  # Whether the enemy is alive
-        self.player_detected = False  # Whether a player is in range
+        self.mov_speed = 2  # Slower walking speed
+        self.velocity_y = 0
+        self.on_ground = False  # Tracks if the enemy is on the ground
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        self.screen_width, self.screen_height = screen_size
+        self.left_bound = left_bound if left_bound is not None else self.x - 100
+        self.right_bound = right_bound if right_bound is not None else self.x + 100
+        self.timer = 2  # Timer for idle and walking durations
 
-    def update(self):
-        # Update logic based on state
-        if not self.alive:
-            self.state = "death"
-        elif self.player_detected:
-            self.state = "attack"
-        elif self.state == "walk":
-            # Move left or right
+    def update(self, delta_time, terrain_dict):
+        self.velocity_y += 0.3  # Simulate gravity
+        self.y += self.velocity_y
+        self.on_ground = False  # Reset ground status
+
+        # Vertical collision handling
+        for rect in terrain_dict.values():
+            if self.rect.colliderect(rect):
+                if self.rect.bottom > rect.top and self.rect.centery < rect.centery:
+                    self.y = rect.top - self.height
+                    self.velocity_y = 0
+                    self.on_ground = True
+                elif self.rect.top < rect.bottom and self.rect.centery > rect.centery:
+                    self.y = rect.bottom
+                    self.velocity_y = 0
+
+        self.rect.y = self.y  # Update rect position vertically
+
+        # State switching logic
+        self.timer -= delta_time
+        if self.state == "idle" and self.timer <= 0:
+            self.state = "walk"
+            self.timer = 3  # Walk for 3 seconds
+            self.direction = "right" if self.direction == "left" else "left"  # Alternate direction
+
+        elif self.state == "walk" and self.timer <= 0:
+            self.state = "idle"
+            self.timer = 2  # Idle for 2 seconds
+
+        # Handle walking logic
+        if self.state == "walk":
             if self.direction == "right":
-                self.x += self.mov_speed
+                self.x += self.mov_speed * delta_time * 60
             elif self.direction == "left":
-                self.x -= self.mov_speed
+                self.x -= self.mov_speed * delta_time * 60
 
-            # Keep enemy within screen bounds
-            if self.x < 0:
-                self.x = 0
+            # Horizontal collision with terrain
+            for rect in terrain_dict.values():
+                if self.rect.colliderect(rect):
+                    if self.rect.right > rect.left and self.x < rect.left:
+                        self.x = rect.left - self.width
+                        self.direction = "left"
+                    elif self.rect.left < rect.right and self.x > rect.right:
+                        self.x = rect.right
+                        self.direction = "right"
+
+            # Boundaries handling
+            if self.x <= self.left_bound:
+                self.x = self.left_bound
                 self.direction = "right"
-            elif self.x + self.width > SCREEN_WIDTH:
-                self.x = SCREEN_WIDTH - self.width
+            elif self.x + self.width >= self.right_bound:
+                self.x = self.right_bound - self.width
                 self.direction = "left"
 
-        # Update animation frame
+        self.rect.x = self.x  # Update rect position horizontally
+
+        # Animation frame update
         self.current_frame += 0.2
         if self.current_frame >= len(animations[self.state]):
             self.current_frame = 0
 
     def draw(self, screen):
-        # Get the current frame of the animation
         frame = animations[self.state][int(self.current_frame)]
-
-        # Flip the frame if the enemy is facing left
         if self.direction == "left":
             frame = pygame.transform.flip(frame, True, False)
-
-        # Draw the frame
         screen.blit(frame, (self.x, self.y))
 
-    def detect_player(self, player_x, player_y):
-        """Detects if the player is within attack range."""
-        distance = abs(self.x - player_x)
-        if distance < 200:
-            self.player_detected = True
-            self.state = "attack"
-        else:
-            self.player_detected = False
-            self.state = "walk"
 
-# Initialize the enemy at a specific position
-enemy = Enemy(500, 500)
 
-# Main game loop
-running = True
-clock = pygame.time.Clock()
 
-# Fake player position for testing
-player_x, player_y = 800, 500
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Update logic
-    enemy.detect_player(player_x, player_y)  # Fake player detection
-    enemy.update()
-
-    # Draw everything
-    screen.fill((0, 0, 0))  # Clear the screen
-    enemy.draw(screen)  # Draw the enemy
-    pygame.display.flip()  # Update the display
-
-    # Cap the frame rate
-    clock.tick(60)
-
-pygame.quit()
